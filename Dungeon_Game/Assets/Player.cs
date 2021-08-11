@@ -5,6 +5,8 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class Player : MonoBehaviour
 { 
+    public bool fpsCam = true;
+    public float fpsCamHeight = 1; 
     public float walkingSpeed = 7.5f;
     public float runningSpeed = 11.5f;
     public float jumpSpeed = 8.0f;
@@ -31,16 +33,35 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+        if(fpsCam) {
+            //set cam pos to player pos
+            Vector3 pos = transform.position;
+            playerCamera.transform.position = new Vector3(pos.x, pos.y+fpsCamHeight, pos.z);
+        }
+
         // We are grounded, so recalculate move direction based on axes
         Vector3 forward = transform.TransformDirection(Vector3.forward);
         Vector3 right = transform.TransformDirection(Vector3.right);
         // Press Left Shift to run
         bool isRunning = Input.GetKey(KeyCode.LeftShift);
-        float curSpeedX = canMove ? (isRunning ? runningSpeed : walkingSpeed) * Input.GetAxis("Vertical") : 0;
-        float curSpeedY = canMove ? (isRunning ? runningSpeed : walkingSpeed) * Input.GetAxis("Horizontal") : 0;
-        float movementDirectionY = moveDirection.y;
-        moveDirection = (forward * curSpeedX) + (right * curSpeedY);
 
+        int leftSpeed = Input.GetKey(KeyCode.A) ? 1 : 0;
+        int rightSpeed = Input.GetKey(KeyCode.D) ? 1 : 0;
+        int upSpeed = Input.GetKey(KeyCode.W) ? 1 : 0;
+        int downSpeed = Input.GetKey(KeyCode.S) ? 1 : 0;
+
+        Vector3 move = new Vector3(canMove ? rightSpeed - leftSpeed : 0, 0, canMove ? downSpeed - upSpeed : 0);
+        move = move.normalized * (isRunning ? runningSpeed : walkingSpeed);
+        float curSpeedX = move.x;
+        float curSpeedZ = move.z;
+
+        float movementDirectionY = moveDirection.y;
+        if(fpsCam) {
+            moveDirection = (forward * curSpeedX) + (right * curSpeedZ);
+        } else {
+            moveDirection = new Vector3(curSpeedX,0,-curSpeedZ);
+        }
+        
         if (Input.GetButton("Jump") && canMove && characterController.isGrounded)
         {
             moveDirection.y = jumpSpeed;
@@ -62,32 +83,12 @@ public class Player : MonoBehaviour
         characterController.Move(moveDirection * Time.deltaTime);
 
         // Player and Camera rotation
-        if (canMove)
+        if (canMove && fpsCam)
         {
             rotationX += -Input.GetAxis("Mouse Y") * lookSpeed;
             rotationX = Mathf.Clamp(rotationX, -lookXLimit, lookXLimit);
-            playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
+            playerCamera.transform.localRotation = Quaternion.Euler(rotationX, transform.eulerAngles.y-90, 0);
             transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
         }
     }
 }
-
-    // void Start()
-    // {
-    //     _controller = GetComponent<CharacterController>();
-    // }
-
-    // // Update is called once per frame
-    // void Update()
-    // {
-    //     int left = Input.GetKey(KeyCode.A) ? 1 : 0;
-    //     int right = Input.GetKey(KeyCode.D) ? 1 : 0;
-    //     int up = Input.GetKey(KeyCode.W) ? 1 : 0;
-    //     int down = Input.GetKey(KeyCode.S) ? 1 : 0;
-
-    //     Vector3 move = new Vector3(right - left, 0, up - down);
-    //     move = move.normalized * moveSpeed; 
-    //     Vector3 velocity = move;
-
-    //     _controller.Move(velocity * Time.deltaTime);
-    // }
