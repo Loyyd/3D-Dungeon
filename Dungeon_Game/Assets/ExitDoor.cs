@@ -6,18 +6,13 @@ using UnityEngine;
 public class ExitDoor : MonoBehaviour
 {
     public GameObject player;
-    public GameObject controllerObject;
-    Controller controller;
-
-    void Start() {
-        controllerObject.GetComponent<Controller>();
-    }
+    public Controller controller;
 
     void Update()
     {
         Vector3 plyPos = player.transform.position;
         Debug.Log(plyPos - transform.position);
-        if((plyPos - transform.position).magnitude < 2) {
+        if((plyPos - transform.position).magnitude < 0.3) {
             controller.newMap(20,20);
         }
     }

@@ -48,7 +48,10 @@ public class Controller : MonoBehaviour
         }
         // Create Exit
         Vector2Int newPos = LevelGenerator.RandomFreePos();
-        Instantiate(exitPrefab, new Vector3(newPos.x, 0, newPos.y), Quaternion.Euler(0, 0, 0));
+        GameObject exit = Instantiate(exitPrefab, new Vector3(newPos.x, 0, newPos.y), Quaternion.Euler(0, 0, 0));
+        exit.GetComponent<ExitDoor>().player = player;
+        exit.GetComponent<ExitDoor>().controller = this;
+        exit.transform.SetParent(levelObject.transform, false);
 
         // Set Player Pos
         newPos = LevelGenerator.RandomFreePos();
