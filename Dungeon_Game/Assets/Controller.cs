@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class Controller : MonoBehaviour
 {
-    RoomTile[,] level;
     public GameObject levelObject;
     public GameObject wallPrefab;
     public GameObject groundPrefab;
@@ -22,23 +21,24 @@ public class Controller : MonoBehaviour
     {
         Destroy(levelObject, 0);
         levelObject = new GameObject("Level");
-        level = LevelGenerator.Generate(width, height);
-        for (int i = 0; i < level.GetLength(0); i++)
+        LevelGenerator.level = LevelGenerator.Generate(width, height);
+        Level level = LevelGenerator.level;
+        for (int i = 0; i < level.tiles.GetLength(0); i++)
         {
-            for (int j = 0; j < level.GetLength(1); j++)
+            for (int j = 0; j < level.tiles.GetLength(1); j++)
             {
-                if (level[i, j] == RoomTile.Ground)
+                if (level.tiles[i, j] == RoomTile.Ground)
                 {
-                    Debug.Log("Ground");
+                    //Debug.Log("Ground");
                     GameObject newGround = Instantiate(groundPrefab, new Vector3(i, 0, j), Quaternion.Euler(0, 0, 0));
                     newGround.transform.SetParent(levelObject.transform, false);
                 }
 
-                else if (level[i, j] == RoomTile.Wall)
+                else if (level.tiles[i, j] == RoomTile.Wall)
                 {
-                    Debug.Log("Wall");
+                    //Debug.Log("Wall");
                     GameObject newWall = Instantiate(wallPrefab, new Vector3(i, 0, j), Quaternion.Euler(0, 0, 0));
-                    newWall.GetComponent<Wall>().SetMesh(level, i, j);
+                    newWall.GetComponent<Wall>().SetMesh(level.tiles, i, j);
                     newWall.transform.SetParent(levelObject.transform, false);
 
                     GameObject newGround = Instantiate(groundPrefab, new Vector3(i, 0, j), Quaternion.Euler(0, 0, 0));
