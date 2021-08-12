@@ -284,7 +284,6 @@ namespace ExtensionMethods
                 }
             }
         }
-
         static void randomAutomaton(int[,] level)
         {
             int w = level.GetLength(0);
@@ -320,6 +319,59 @@ namespace ExtensionMethods
                     level[i, j] = 0;
                 }
             }
+        }
+        public static int getLeft(int i, int j)
+        {
+            if (i < level.GetLength(0) - 1)
+            {
+                return level[i + 1, j];
+            }
+            else
+            {
+                return -1;
+            }
+        }
+        public static int getRight(int i, int j)
+        {
+            if (i > 0)
+            {
+                return level[i - 1, j];
+            }
+            else
+            {
+                return -1;
+            }
+        }
+        public static int getAbove(int i, int j)
+        {
+            if (j > 0)
+            {
+                return level[i, j - 1];
+            }
+            else
+            {
+                return -1;
+            }
+        }
+        public static int getBelow(int i, int j)
+        {
+            if (j < level.GetLength(1) - 1)
+            {
+                return level[i, j + 1];
+            }
+            else
+            {
+                return -1;
+            }
+        }
+        public static int countAdjacent(int value, int i, int j)
+        {
+            int res = 0;
+            if(getLeft(i,j)==value) res++;
+            if(getRight(i,j)==value) res++;
+            if(getAbove(i,j)==value) res++;
+            if(getBelow(i,j)==value) res++;
+            return res;
         }
         static void shuffleArray(int[] ar)
         {

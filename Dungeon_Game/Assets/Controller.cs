@@ -20,13 +20,14 @@ public class Controller : MonoBehaviour
                 if (level[i, j] == 1)
                 {
                     Debug.Log("Ground");
-                    Instantiate(ground, new Vector3(i, 0, j), Quaternion.Euler(0,0,0));
+                    Instantiate(ground, new Vector3(i, 0, j), Quaternion.Euler(0, 0, 0));
                 }
                 else if (level[i, j] == 0)
                 {
                     Debug.Log("Wall");
-                    Instantiate(wall, new Vector3(i, 0, j), Quaternion.Euler(0,0,0));
-                    Instantiate(ground, new Vector3(i, 0, j), Quaternion.Euler(0,0,0));
+                    GameObject newWall = Instantiate(wall, new Vector3(i, 0, j), Quaternion.Euler(0, 0, 0));
+                    newWall.GetComponent<Wall>().SetMesh(level,i,j);
+                    Instantiate(ground, new Vector3(i, 0, j), Quaternion.Euler(0, 0, 0));
                 }
 
             }
