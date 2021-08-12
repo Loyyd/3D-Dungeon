@@ -14,7 +14,7 @@ public class Camera_Controller_Single : MonoBehaviour
     void Start()
     {
         PlayerTransform = follower.GetComponent<Transform>();
-        _cameraOffset = transform.position - PlayerTransform.position;
+        //_cameraOffset = transform.position - PlayerTransform.position;
         
     }
 
