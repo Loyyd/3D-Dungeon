@@ -1,55 +1,55 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Torch_flicker : MonoBehaviour
 {
 
-    float rand_number;
+    float targetIntensity;
     public float minnumber;
     public float maxnumber;
 
-    public float startwert;
-  
-    void Start()
-    {
-        GetComponent<Light>().range = 7;
-        startwert = 4;
-        rand_number = 4;
-    }
+    bool increasing = true;
+    float curIntensity;
 
     void Update()
     {
-        startwert = rand_number;
-        GetComponent<Light>().intensity = startwert;
-        rand_number = Random.Range(minnumber, maxnumber);
-        Fade();
-        //GetComponent<Light>().intensity = rand_number;
-       
+        if (increasing)
+        {
+            if (curIntensity <= targetIntensity)
+            {
+                curIntensity += 0.3f;
+                GetComponent<Light>().intensity = curIntensity;
+            }
+            else
+            {
+                SetTargetValue();
+            }
+        }
+        else
+        {
+            if (curIntensity >= targetIntensity)
+            {
+                curIntensity -= 0.3f;
+                GetComponent<Light>().intensity = curIntensity;
+            }
+            else
+            {
+                SetTargetValue();
+            }
+        }
     }
 
-    void Fade()
+    void SetTargetValue()
     {
-        if (startwert > rand_number)
+        if (increasing)
         {
-            for (float ft = startwert; ft >= rand_number; ft -= 0.1f)
-            {
-                GetComponent<Light>().intensity = ft;
-                //Color c = renderer.material.color;
-                //c.a = ft;
-                //renderer.material.color = c;
-            }
+            targetIntensity = Random.Range(minnumber, targetIntensity);
+            increasing = false;
         }
-
-        if (startwert > rand_number)
+        else
         {
-            for (float ft = startwert; ft >= rand_number; ft -= 0.1f)
-            {
-                GetComponent<Light>().intensity = ft;
-                //Color c = renderer.material.color;
-                //c.a = ft;
-                //renderer.material.color = c;
-            }
+            targetIntensity = Random.Range(targetIntensity, maxnumber);
+            increasing = true;
         }
+        //rand_number = Mathf.Round(rand_number * 10.0f) / 10.0f;
     }
 }
