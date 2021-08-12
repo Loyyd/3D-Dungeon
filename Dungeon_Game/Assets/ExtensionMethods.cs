@@ -74,6 +74,7 @@ namespace ExtensionMethods
             int _x = UnityEngine.Random.Range(room.MinX, room.MaxX);
             int _y = UnityEngine.Random.Range(room.MinY, room.MaxY);
 
+            int count = 10;
             while (true)
             {
                 int closest = 0;
@@ -117,11 +118,16 @@ namespace ExtensionMethods
                 if (tiles[_x,_y]!=RoomTile.Wall || LevelGenerator.CountAdjacent(RoomTile.Wall, _x, _y) < 2)
                 {
                     objectAngles[_x,_y] = 0;
-                    continue;
+                    if(count==0) {
+                        break;
+                    } else {
+                        continue;
+                    }
                 }
                 else
                 {
                     objects[_x, _y] = RoomObject.Torch;
+                    break;
                 }
             }
         }
@@ -181,18 +187,6 @@ namespace ExtensionMethods
                 }
                 Console.Write("\n");
             }
-        }
-
-        static void Main(string[] args)
-        {
-            while (true)
-            {
-                String[] input = Console.ReadLine().Split(',');
-                int width = Convert.ToInt32(input[0]);
-                int height = Convert.ToInt32(input[1]);
-                PrintLevel(Generate(width, height));
-            }
-
         }
 
         static void CleanMap(Level level)
