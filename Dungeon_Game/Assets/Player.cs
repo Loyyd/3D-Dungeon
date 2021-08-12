@@ -4,9 +4,9 @@ using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
 public class Player : MonoBehaviour
-{ 
+{
     public bool fpsCam = true;
-    public float fpsCamHeight = 1; 
+    public float fpsCamHeight = 1;
     public float walkingSpeed = 7.5f;
     public float runningSpeed = 11.5f;
     public float jumpSpeed = 8.0f;
@@ -26,17 +26,21 @@ public class Player : MonoBehaviour
     {
         characterController = GetComponent<CharacterController>();
 
-        // Lock cursor
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        if (fpsCam)
+        {
+            // Lock cursor
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
     }
 
     void Update()
     {
-        if(fpsCam) {
+        if (fpsCam)
+        {
             //set cam pos to player pos
             Vector3 pos = transform.position;
-            playerCamera.transform.position = new Vector3(pos.x, pos.y+fpsCamHeight, pos.z);
+            playerCamera.transform.position = new Vector3(pos.x, pos.y + fpsCamHeight, pos.z);
         }
 
         // We are grounded, so recalculate move direction based on axes
@@ -56,12 +60,15 @@ public class Player : MonoBehaviour
         float curSpeedZ = move.z;
 
         float movementDirectionY = moveDirection.y;
-        if(fpsCam) {
+        if (fpsCam)
+        {
             moveDirection = (forward * curSpeedX) + (right * curSpeedZ);
-        } else {
-            moveDirection = new Vector3(curSpeedX,0,-curSpeedZ);
         }
-        
+        else
+        {
+            moveDirection = new Vector3(curSpeedX, 0, -curSpeedZ);
+        }
+
         if (Input.GetButton("Jump") && canMove && characterController.isGrounded)
         {
             moveDirection.y = jumpSpeed;
@@ -87,7 +94,7 @@ public class Player : MonoBehaviour
         {
             rotationX += -Input.GetAxis("Mouse Y") * lookSpeed;
             rotationX = Mathf.Clamp(rotationX, -lookXLimit, lookXLimit);
-            playerCamera.transform.localRotation = Quaternion.Euler(rotationX, transform.eulerAngles.y-90, 0);
+            playerCamera.transform.localRotation = Quaternion.Euler(rotationX, transform.eulerAngles.y - 90, 0);
             transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
         }
     }

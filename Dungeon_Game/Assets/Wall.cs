@@ -7,17 +7,17 @@ public class Wall : MonoBehaviour
 {
     public Mesh corner;
     public Mesh straight;
-    public void SetMesh(int[,] level, int i, int j)
+    public void SetMesh(RoomTile[,] level, int i, int j)
     {
-        int adjCount = LevelGenerator.countAdjacent(0, i, j);
+        int adjCount = LevelGenerator.CountAdjacent(RoomTile.Wall, i, j);
         if (adjCount == 2)
         {
-            if (LevelGenerator.getLeft(i, j) == 0 && LevelGenerator.getRight(i, j) == 0)
+            if (LevelGenerator.GetLeft(i, j) == 0 && LevelGenerator.GetRight(i, j) == RoomTile.Wall)
             {
                 SetMesh("Straight");
                 transform.rotation = Quaternion.Euler(0, 90, 0);
             }
-            else if (LevelGenerator.getAbove(i, j) == 0 && LevelGenerator.getBelow(i, j) == 0)
+            else if (LevelGenerator.GetAbove(i, j) == 0 && LevelGenerator.GetBelow(i, j) == RoomTile.Wall)
             {
                 SetMesh("Straight");
             }

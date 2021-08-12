@@ -4,33 +4,39 @@ using UnityEngine;
 
 namespace ExtensionMethods
 {
+    public enum RoomTile
+    {
+        Empty = -1,
+        Ground = 1,
+        Wall = 0,
+    }
     public static class LevelGenerator
     {
         static System.Random random = new System.Random();
         static int levelWidth;
         static int levelHeight;
-        static int[,] level;
+        static RoomTile[,] level;
 
-        public static int[,] Generate(int width, int height)
+        public static RoomTile[,] Generate(int width, int height)
         {
             levelWidth = width;
             levelHeight = height;
-            level = new int[levelWidth, levelHeight];
+            level = new RoomTile[levelWidth, levelHeight];
 
-            resetCells(level);
-            randomDivider(level);
-            cleanMap(level);
+            ResetCells(level);
+            RandomDivider(level);
+            CleanMap(level);
 
-            return (int[,])level.Clone();
+            return (RoomTile[,])level.Clone();
         }
 
-        static void PrintLevel(int[,] level)
+        static void PrintLevel(RoomTile[,] level)
         {
             for (int i = 0; i < level.GetLength(1); i++)
             {
                 for (int j = 0; j < level.GetLength(0); j++)
                 {
-                    Debug.Log((level[j, i] == 0 ? "E" : (level[j, i] == 1 ? "_" : " ")) + " ");
+                    Debug.Log((level[j, i] == 0 ? "E" : (level[j, i] == RoomTile.Ground ? "_" : " ")) + " ");
                 }
                 Console.Write("\n");
             }
@@ -48,7 +54,7 @@ namespace ExtensionMethods
 
         }
 
-        static void cleanMap(int[,] level)
+        static void CleanMap(RoomTile[,] level)
         {
             int w = level.GetLength(0);
             int h = level.GetLength(1);
@@ -57,12 +63,12 @@ namespace ExtensionMethods
                 for (int j = 0; j < h; j++)
                 {
                     int count = 0;
-                    if (j != 0 && level[i, j - 1] == 1) count++;
-                    if (i != 0 && level[i - 1, j] == 1) count++;
-                    if (level[i, j] == 1) count++;
-                    if (i != w - 1 && level[i + 1, j] == 1) count++;
-                    if (j != h - 1 && level[i, j + 1] == 1) count++;
-                    if (level[i, j] == 1 && count == 1 || count == 2)
+                    if (j != 0 && level[i, j - 1] == RoomTile.Ground) count++;
+                    if (i != 0 && level[i - 1, j] == RoomTile.Ground) count++;
+                    if (level[i, j] == RoomTile.Ground) count++;
+                    if (i != w - 1 && level[i + 1, j] == RoomTile.Ground) count++;
+                    if (j != h - 1 && level[i, j + 1] == RoomTile.Ground) count++;
+                    if (level[i, j] == RoomTile.Ground && count == 1 || count == 2)
                     {
                         level[i, j] = 0;
                     }
@@ -73,24 +79,24 @@ namespace ExtensionMethods
                 for (int j = 0; j < h; j++)
                 {
                     int count = 0;
-                    if (j != 0 && level[i, j - 1] == 1) count++;
-                    if (i != 0 && level[i - 1, j] == 1) count++;
-                    if (level[i, j] == 1) count++;
-                    if (i != w - 1 && level[i + 1, j] == 1) count++;
-                    if (j != h - 1 && level[i, j + 1] == 1) count++;
-                    if (i != 0 && j != 0 && level[i - 1, j - 1] == 1) count++;
-                    if (i != w - 1 && j != 0 && level[i + 1, j - 1] == 1) count++;
-                    if (i != 0 && j != h - 1 && level[i - 1, j + 1] == 1) count++;
-                    if (i != w - 1 && j != h - 1 && level[i + 1, j + 1] == 1) count++;
+                    if (j != 0 && level[i, j - 1] == RoomTile.Ground) count++;
+                    if (i != 0 && level[i - 1, j] == RoomTile.Ground) count++;
+                    if (level[i, j] == RoomTile.Ground) count++;
+                    if (i != w - 1 && level[i + 1, j] == RoomTile.Ground) count++;
+                    if (j != h - 1 && level[i, j + 1] == RoomTile.Ground) count++;
+                    if (i != 0 && j != 0 && level[i - 1, j - 1] == RoomTile.Ground) count++;
+                    if (i != w - 1 && j != 0 && level[i + 1, j - 1] == RoomTile.Ground) count++;
+                    if (i != 0 && j != h - 1 && level[i - 1, j + 1] == RoomTile.Ground) count++;
+                    if (i != w - 1 && j != h - 1 && level[i + 1, j + 1] == RoomTile.Ground) count++;
                     if (count == 0)
                     {
-                        level[i, j] = -1;
+                        level[i, j] = RoomTile.Empty;
                     }
                 }
             }
         }
 
-        static void dfs(int[,] level, int pos, List<int> visited)
+        static void DFS(RoomTile[,] level, int pos, List<int> visited)
         {
             int w = level.GetLength(0);
             int h = level.GetLength(1);
@@ -103,13 +109,13 @@ namespace ExtensionMethods
                 return;
             }
             visited.Add(pos);
-            if (pos % w != w - 1) dfs(level, pos + 1, visited);
-            if (pos / w != h - 1) dfs(level, pos + w, visited);
-            if (pos % w != 0) dfs(level, pos - 1, visited);
-            if (pos / w != 0) dfs(level, pos - w, visited);
+            if (pos % w != w - 1) DFS(level, pos + 1, visited);
+            if (pos / w != h - 1) DFS(level, pos + w, visited);
+            if (pos % w != 0) DFS(level, pos - 1, visited);
+            if (pos / w != 0) DFS(level, pos - w, visited);
         }
 
-        static Boolean isConnected(int[,] level)
+        static Boolean IsConnected(RoomTile[,] level)
         {
             int w = level.GetLength(0);
             int h = level.GetLength(1);
@@ -117,7 +123,7 @@ namespace ExtensionMethods
             int pos = -1;
             for (int i = 0; i < w * h; i++)
             {
-                if (level[i % w, i / w] == 1)
+                if (level[i % w, i / w] == RoomTile.Ground)
                 {
                     pos = i;
                     break;
@@ -125,12 +131,12 @@ namespace ExtensionMethods
             }
             if (pos != -1)
             {
-                dfs(level, pos, visited);
+                DFS(level, pos, visited);
             }
             int free = 0;
             for (int i = 0; i < w * h; i++)
             {
-                if (level[i % w, i / w] == 1)
+                if (level[i % w, i / w] == RoomTile.Ground)
                 {
                     free++;
                 }
@@ -145,14 +151,14 @@ namespace ExtensionMethods
             }
         }
 
-        static void randomDivider(int[,] level)
+        static void RandomDivider(RoomTile[,] level)
         {
             int w = level.GetLength(0);
             int h = level.GetLength(1);
-            divide(level, 5, 1, w - 2, 1, h - 2, 0, 3, true);
+            Divide(level, 5, 1, w - 2, 1, h - 2, 0, 3, true);
         }
 
-        static void cutoutRect(int[,] level, int x1, int x2, int y1, int y2)
+        static void CutoutRect(RoomTile[,] level, int x1, int x2, int y1, int y2)
         {
             for (int i = x1; i <= x2; i++)
             {
@@ -163,18 +169,18 @@ namespace ExtensionMethods
             }
         }
 
-        static void freeRect(int[,] level, int x1, int x2, int y1, int y2)
+        static void FreeRect(RoomTile[,] level, int x1, int x2, int y1, int y2)
         {
             for (int i = x1; i <= x2; i++)
             {
                 for (int j = y1; j <= y2; j++)
                 {
-                    level[i, j] = 1;
+                    level[i, j] = RoomTile.Ground;
                 }
             }
         }
 
-        static void divide(int[,] level, int iter, int x1, int x2, int y1, int y2, int omit, int minRoomSize, Boolean horizontal)
+        static void Divide(RoomTile[,] level, int iter, int x1, int x2, int y1, int y2, int omit, int minRoomSize, Boolean horizontal)
         {
             Boolean cutout = (x2 - x1 > 15 || y2 - y1 > 15) ? false : random.NextDouble() < 0.7;
             iter -= random.Next(2);
@@ -195,30 +201,30 @@ namespace ExtensionMethods
                 }
                 if (at < omit && cutout)
                 {
-                    cutoutRect(level, x1, x2, y1, at - 1);
-                    if (!isConnected(level))
+                    CutoutRect(level, x1, x2, y1, at - 1);
+                    if (!IsConnected(level))
                     {
-                        freeRect(level, x1, x2, y1, at - 1);
-                        divide(level, iter - 1, x1, x2, y1, at - 1, nextOmit, minRoomSize, false);
+                        FreeRect(level, x1, x2, y1, at - 1);
+                        Divide(level, iter - 1, x1, x2, y1, at - 1, nextOmit, minRoomSize, false);
                     }
                 }
                 else
                 {
-                    divide(level, iter - 1, x1, x2, y1, at - 1, nextOmit, minRoomSize, false);
+                    Divide(level, iter - 1, x1, x2, y1, at - 1, nextOmit, minRoomSize, false);
 
                 }
                 if (at > omit && cutout)
                 {
-                    cutoutRect(level, x1, x2, at + 1, y2);
-                    if (!isConnected(level))
+                    CutoutRect(level, x1, x2, at + 1, y2);
+                    if (!IsConnected(level))
                     {
-                        freeRect(level, x1, x2, at + 1, y2);
-                        divide(level, iter - 1, x1, x2, at + 1, y2, nextOmit, minRoomSize, false);
+                        FreeRect(level, x1, x2, at + 1, y2);
+                        Divide(level, iter - 1, x1, x2, at + 1, y2, nextOmit, minRoomSize, false);
                     }
                 }
                 else
                 {
-                    divide(level, iter - 1, x1, x2, at + 1, y2, nextOmit, minRoomSize, false);
+                    Divide(level, iter - 1, x1, x2, at + 1, y2, nextOmit, minRoomSize, false);
                 }
             }
             else
@@ -235,12 +241,12 @@ namespace ExtensionMethods
                     if (i == nextOmit) continue;
                     level[at, i] = 0;
                 }
-                divide(level, iter - 1, x1, at - 1, y1, y2, nextOmit, minRoomSize, true);
-                divide(level, iter - 1, at + 1, x2, y1, y2, nextOmit, minRoomSize, true);
+                Divide(level, iter - 1, x1, at - 1, y1, y2, nextOmit, minRoomSize, true);
+                Divide(level, iter - 1, at + 1, x2, y1, y2, nextOmit, minRoomSize, true);
             }
         }
 
-        static void addRandomWalls(int[,] level)
+        static void AddRandomWalls(RoomTile[,] level)
         {
             int w = level.GetLength(0);
             int h = level.GetLength(1);
@@ -254,18 +260,22 @@ namespace ExtensionMethods
                 {
                     continue;
                 }
-                int beforeChange = level[col, row];
+                RoomTile beforeChange = level[col, row];
                 level[col, row] = 0;
-                int count = level[col - 1, row] + level[col + 1, row] +
-                  level[col, row - 1] + level[col, row + 1];
-                if (!isConnected(level) || count == 4 || count == 2 || count == 1 || count == 0)
+                int count = 0;
+                if (level[col - 1, row] == RoomTile.Ground) count++;
+                if (level[col + 1, row] == RoomTile.Ground) count++;
+                if (level[col, row - 1] == RoomTile.Ground) count++;
+                if (level[col, row + 1] == RoomTile.Ground) count++;
+
+                if (!IsConnected(level) || count == 4 || count == 2 || count == 1 || count == 0)
                 {
                     level[col, row] = beforeChange;
                 }
             }
         }
 
-        static void resetCells(int[,] level)
+        static void ResetCells(RoomTile[,] level)
         {
             int w = level.GetLength(0);
             int h = level.GetLength(1);
@@ -280,11 +290,11 @@ namespace ExtensionMethods
             {
                 for (int i = 1; i < w - 1; i++)
                 {
-                    level[i, j] = 1;
+                    level[i, j] = RoomTile.Ground;
                 }
             }
         }
-        static void randomAutomaton(int[,] level)
+        static void RandomAutomaton(RoomTile[,] level)
         {
             int w = level.GetLength(0);
             int h = level.GetLength(1);
@@ -293,7 +303,7 @@ namespace ExtensionMethods
             {
                 for (int i = 1; i < w - 1; i++)
                 {
-                    level[i, j] = random.NextDouble() < 0.5 ? 1 : 0;
+                    level[i, j] = random.NextDouble() < 0.5 ? RoomTile.Ground : RoomTile.Wall;
                 }
             }
 
@@ -301,26 +311,50 @@ namespace ExtensionMethods
             {
                 cells[i] = i;
             }
-            shuffleArray(cells);
+            ShuffleArray(cells);
 
             for (int c = 0; c < cells.Length; c++)
             {
                 int i = cells[c] % (w - 2) + 1;
                 int j = cells[c] / (w - 2) + 1;
-                int count = level[i - 1, j - 1] + level[i, j - 1] + level[i + 1, j - 1] +
-                  level[i - 1, j] + level[i, j] + level[i + 1, j] +
-                  level[i - 1, j + 1] + level[i, j + 1] + level[i + 1, j + 1];
+
+                int count = 0;
+                if (level[i - 1, j - 1] == RoomTile.Ground) count++;
+                if (level[i, j - 1] == RoomTile.Ground) count++;
+                if (level[i + 1, j - 1] == RoomTile.Ground) count++;
+                if (level[i - 1, j] == RoomTile.Ground) count++;
+                if (level[i, j] == RoomTile.Ground) count++;
+                if (level[i + 1, j] == RoomTile.Ground) count++;
+                if (level[i - 1, j + 1] == RoomTile.Ground) count++;
+                if (level[i, j + 1] == RoomTile.Ground) count++;
+                if (level[i + 1, j + 1] == RoomTile.Ground) count++;
+
                 if (count >= 5)
                 {
-                    level[i, j] = 1;
+                    level[i, j] = RoomTile.Ground;
                 }
                 else
                 {
-                    level[i, j] = 0;
+                    level[i, j] = RoomTile.Wall;
                 }
             }
         }
-        public static int getLeft(int i, int j)
+        public static Vector2Int RandomFreePos()
+        {
+            List<Vector2Int> freeSpots = new List<Vector2Int>();
+            for (int i = 0; i < level.GetLength(0); i++)
+            {
+                for (int j = 0; j < level.GetLength(1); j++)
+                {
+                    if (level[i, j] == RoomTile.Ground)
+                    {
+                        freeSpots.Add(new Vector2Int(i, j));
+                    }
+                }
+            }
+            return freeSpots[random.Next(freeSpots.Count)];
+        }
+        public static RoomTile GetLeft(int i, int j)
         {
             if (i < level.GetLength(0) - 1)
             {
@@ -328,10 +362,10 @@ namespace ExtensionMethods
             }
             else
             {
-                return -1;
+                return RoomTile.Empty;
             }
         }
-        public static int getRight(int i, int j)
+        public static RoomTile GetRight(int i, int j)
         {
             if (i > 0)
             {
@@ -339,10 +373,10 @@ namespace ExtensionMethods
             }
             else
             {
-                return -1;
+                return RoomTile.Empty;
             }
         }
-        public static int getAbove(int i, int j)
+        public static RoomTile GetAbove(int i, int j)
         {
             if (j > 0)
             {
@@ -350,10 +384,10 @@ namespace ExtensionMethods
             }
             else
             {
-                return -1;
+                return RoomTile.Empty;
             }
         }
-        public static int getBelow(int i, int j)
+        public static RoomTile GetBelow(int i, int j)
         {
             if (j < level.GetLength(1) - 1)
             {
@@ -361,19 +395,19 @@ namespace ExtensionMethods
             }
             else
             {
-                return -1;
+                return RoomTile.Empty;
             }
         }
-        public static int countAdjacent(int value, int i, int j)
+        public static int CountAdjacent(RoomTile value, int i, int j)
         {
             int res = 0;
-            if(getLeft(i,j)==value) res++;
-            if(getRight(i,j)==value) res++;
-            if(getAbove(i,j)==value) res++;
-            if(getBelow(i,j)==value) res++;
+            if (GetLeft(i, j) == value) res++;
+            if (GetRight(i, j) == value) res++;
+            if (GetAbove(i, j) == value) res++;
+            if (GetBelow(i, j) == value) res++;
             return res;
         }
-        static void shuffleArray(int[] ar)
+        static void ShuffleArray(int[] ar)
         {
             for (int i = ar.Length - 1; i > 0; i--)
             {
