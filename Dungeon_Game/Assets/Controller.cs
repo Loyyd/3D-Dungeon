@@ -9,6 +9,7 @@ public class Controller : MonoBehaviour
     public GameObject wallPrefab;
     public GameObject groundPrefab;
     public GameObject exitPrefab;
+    public GameObject torchPrefab;
     public GameObject player;
 
     // Start is called before the first frame update
@@ -23,29 +24,49 @@ public class Controller : MonoBehaviour
         levelObject = new GameObject("Level");
         LevelGenerator.level = LevelGenerator.Generate(width, height);
         Level level = LevelGenerator.level;
+
+        // SPAWN GROUND AND WALLS
         for (int i = 0; i < level.tiles.GetLength(0); i++)
         {
             for (int j = 0; j < level.tiles.GetLength(1); j++)
             {
                 if (level.tiles[i, j] == RoomTile.Ground)
                 {
-                    //Debug.Log("Ground");
-                    GameObject newGround = Instantiate(groundPrefab, new Vector3(i, 0, j), Quaternion.Euler(0, 0, 0));
-                    newGround.transform.SetParent(levelObject.transform, false);
+                    // Spawn Ground
+                    GameObject o = Instantiate(groundPrefab, new Vector3(i, 0, j), Quaternion.Euler(0, 0, 0));
+                    o.transform.SetParent(levelObject.transform, false);
                 }
 
                 else if (level.tiles[i, j] == RoomTile.Wall)
                 {
-                    //Debug.Log("Wall");
-                    GameObject newWall = Instantiate(wallPrefab, new Vector3(i, 0, j), Quaternion.Euler(0, 0, 0));
-                    newWall.GetComponent<Wall>().SetMesh(level.tiles, i, j);
-                    newWall.transform.SetParent(levelObject.transform, false);
+                    // Spawn Wall
+                    GameObject o = Instantiate(wallPrefab, new Vector3(i, 0, j), Quaternion.Euler(0, 0, 0));
+                    o.GetComponent<Wall>().SetMesh(level.tiles, i, j);
+                    o.transform.SetParent(levelObject.transform, false);
 
-                    GameObject newGround = Instantiate(groundPrefab, new Vector3(i, 0, j), Quaternion.Euler(0, 0, 0));
-                    newGround.transform.SetParent(levelObject.transform, false);
+                    // Spawn Ground
+                    o = Instantiate(groundPrefab, new Vector3(i, 0, j), Quaternion.Euler(0, 0, 0));
+                    o.transform.SetParent(levelObject.transform, false);
                 }
             }
         }
+
+        // PLACE OBJECTS
+        level.PlaceTorches(1);
+        // SPAWN OBJECTS
+        for (int i = 0; i < level.tiles.GetLength(0); i++)
+        {
+            for (int j = 0; j < level.tiles.GetLength(1); j++)
+            {
+                if (level.objects[i, j] == RoomObject.Torch)
+                {
+                    // Spawn Torch
+                    GameObject o = Instantiate(torchPrefab, new Vector3(i, 0, j), Quaternion.Euler(0, 0, 0));
+                    o.transform.SetParent(levelObject.transform, false);
+                }
+            }
+        }
+
         // Create Exit
         Vector2Int newPos = LevelGenerator.RandomFreePos();
         GameObject exit = Instantiate(exitPrefab, new Vector3(newPos.x, 0, newPos.y), Quaternion.Euler(0, 0, 0));

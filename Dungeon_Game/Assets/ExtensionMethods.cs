@@ -7,12 +7,18 @@ namespace ExtensionMethods
     public enum RoomTile
     {
         Empty = -1,
-        Ground = 1,
-        Wall = 0,
+        Ground = 0,
+        Wall = 1,
+    }
+    public enum RoomObject {
+        None = -1,
+        Torch = 0,
+        Chest = 1
     }
     public class Level
     {
         public RoomTile[,] tiles;
+        public RoomObject[,] objects;
         List<Room> rooms = new List<Room>();
         List<Vector2Int> entrances = new List<Vector2Int>();
         public Room RoomAtPos(int x, int y)
@@ -61,7 +67,7 @@ namespace ExtensionMethods
                 {
                     _room.entrances.Add(entrance);
                 }
-                _room = RoomAtPos(entrance.x -1, entrance.y);
+                _room = RoomAtPos(entrance.x - 1, entrance.y);
                 if (_room != null)
                 {
                     _room.entrances.Add(entrance);
@@ -76,6 +82,35 @@ namespace ExtensionMethods
                 {
                     _room.entrances.Add(entrance);
                 }
+            }
+        }
+        public void PlaceTorch(Room room)
+        {
+            int _x = UnityEngine.Random.Range(room.MinX, room.MaxX);
+            int _y = UnityEngine.Random.Range(room.MinY, room.MaxY);
+            if (Math.Abs(_x - room.MinX) < Math.Abs(_x - room.MaxX))
+            {
+                _x = room.MinX;
+            }
+            else
+            {
+                _x = room.MaxX;
+            }
+            if (Math.Abs(_y - room.MinY) < Math.Abs(_y - room.MaxY))
+            {
+                _y = room.MinY;
+            }
+            else
+            {
+                _y = room.MaxY;
+            }
+            objects[_x, _y] = RoomObject.Torch;
+        }
+        public void PlaceTorches(int count)
+        {
+            foreach (Room room in rooms)
+            {
+                PlaceTorch(room);
             }
         }
     }
