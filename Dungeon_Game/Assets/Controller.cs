@@ -24,12 +24,13 @@ public class Controller : MonoBehaviour
         levelObject = new GameObject("Level");
         LevelGenerator.level = LevelGenerator.Generate(width, height);
         Level level = LevelGenerator.level;
-
+        Debug.Log("Wall2:" + level.tiles[0, 0]);
         // SPAWN GROUND AND WALLS
         for (int i = 0; i < level.tiles.GetLength(0); i++)
         {
             for (int j = 0; j < level.tiles.GetLength(1); j++)
             {
+                Debug.Log(level.tiles[i,j]);
                 if (level.tiles[i, j] == RoomTile.Ground)
                 {
                     // Spawn Ground
@@ -51,21 +52,21 @@ public class Controller : MonoBehaviour
             }
         }
 
-        // PLACE OBJECTS
-        level.PlaceTorches(1);
-        // SPAWN OBJECTS
-        for (int i = 0; i < level.tiles.GetLength(0); i++)
-        {
-            for (int j = 0; j < level.tiles.GetLength(1); j++)
-            {
-                if (level.objects[i, j] == RoomObject.Torch)
-                {
-                    // Spawn Torch
-                    GameObject o = Instantiate(torchPrefab, new Vector3(i, 0, j), Quaternion.Euler(0, 0, 0));
-                    o.transform.SetParent(levelObject.transform, false);
-                }
-            }
-        }
+        // // PLACE OBJECTS
+        // level.PlaceTorches(1);
+        // // SPAWN OBJECTS
+        // for (int i = 0; i < level.objects.GetLength(0); i++)
+        // {
+        //     for (int j = 0; j < level.objects.GetLength(1); j++)
+        //     {
+        //         if (level.objects[i, j] == RoomObject.Torch)
+        //         {
+        //             // Spawn Torch
+        //             GameObject o = Instantiate(torchPrefab, new Vector3(i, 0, j), Quaternion.Euler(0, 0, 0));
+        //             o.transform.SetParent(levelObject.transform, false);
+        //         }
+        //     }
+        // }
 
         // Create Exit
         Vector2Int newPos = LevelGenerator.RandomFreePos();

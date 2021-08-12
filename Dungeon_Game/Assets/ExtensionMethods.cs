@@ -10,10 +10,11 @@ namespace ExtensionMethods
         Ground = 0,
         Wall = 1,
     }
-    public enum RoomObject {
-        None = -1,
-        Torch = 0,
-        Chest = 1
+    public enum RoomObject
+    {
+        None = 0,
+        Torch = 1,
+        Chest = 2
     }
     public class Level
     {
@@ -21,98 +22,98 @@ namespace ExtensionMethods
         public RoomObject[,] objects;
         List<Room> rooms = new List<Room>();
         List<Vector2Int> entrances = new List<Vector2Int>();
-        public Room RoomAtPos(int x, int y)
-        {
-            foreach (Room room in rooms)
-            {
-                if (x >= room.MinX && x <= room.MaxX && y >= room.MinY && y <= room.MaxY)
-                {
-                    return room;
-                }
-            }
-            return null;
-        }
-        public void FindRooms()
-        {
-            for (int i = 0; i < tiles.GetLength(1); i++)
-            {
-                for (int j = 0; j < tiles.GetLength(0); j++)
-                {
-                    if (LevelGenerator.IsEntrance(i, j))
-                    {
-                        entrances.Add(new Vector2Int(i, j));
-                    }
-                    else if (RoomAtPos(i, j) == null)
-                    {
-                        int minX = i;
-                        int minY = j;
-                        int maxX = i;
-                        int maxY = j;
-                        while (!LevelGenerator.IsEntrance(maxX + 1, maxY))
-                        {
-                            maxX++;
-                        }
-                        while (!LevelGenerator.IsEntrance(maxX, maxY + 1))
-                        {
-                            maxY++;
-                        }
-                        rooms.Add(new Room(minX, minY, maxX, maxY));
-                    }
-                }
-            }
-            foreach (Vector2Int entrance in entrances)
-            {
-                Room _room = RoomAtPos(entrance.x + 1, entrance.y);
-                if (_room != null)
-                {
-                    _room.entrances.Add(entrance);
-                }
-                _room = RoomAtPos(entrance.x - 1, entrance.y);
-                if (_room != null)
-                {
-                    _room.entrances.Add(entrance);
-                }
-                _room = RoomAtPos(entrance.x, entrance.y + 1);
-                if (_room != null)
-                {
-                    _room.entrances.Add(entrance);
-                }
-                _room = RoomAtPos(entrance.x, entrance.y - 1);
-                if (_room != null)
-                {
-                    _room.entrances.Add(entrance);
-                }
-            }
-        }
-        public void PlaceTorch(Room room)
-        {
-            int _x = UnityEngine.Random.Range(room.MinX, room.MaxX);
-            int _y = UnityEngine.Random.Range(room.MinY, room.MaxY);
-            if (Math.Abs(_x - room.MinX) < Math.Abs(_x - room.MaxX))
-            {
-                _x = room.MinX;
-            }
-            else
-            {
-                _x = room.MaxX;
-            }
-            if (Math.Abs(_y - room.MinY) < Math.Abs(_y - room.MaxY))
-            {
-                _y = room.MinY;
-            }
-            else
-            {
-                _y = room.MaxY;
-            }
-            objects[_x, _y] = RoomObject.Torch;
-        }
-        public void PlaceTorches(int count)
-        {
-            foreach (Room room in rooms)
-            {
-                PlaceTorch(room);
-            }
-        }
+        // public Room RoomAtPos(int x, int y)
+        // {
+        //     foreach (Room room in rooms)
+        //     {
+        //         if (x >= room.MinX && x <= room.MaxX && y >= room.MinY && y <= room.MaxY)
+        //         {
+        //             return room;
+        //         }
+        //     }
+        //     return null;
+        // }
+        // public void FindRooms()
+        // {
+        //     for (int i = 0; i < tiles.GetLength(1); i++)
+        //     {
+        //         for (int j = 0; j < tiles.GetLength(0); j++)
+        //         {
+        //             if (LevelGenerator.IsEntrance(i, j))
+        //             {
+        //                 entrances.Add(new Vector2Int(i, j));
+        //             }
+        //             else if (RoomAtPos(i, j) == null)
+        //             {
+        //                 int minX = i;
+        //                 int minY = j;
+        //                 int maxX = i;
+        //                 int maxY = j;
+        //                 while (!LevelGenerator.IsEntrance(maxX + 1, maxY))
+        //                 {
+        //                     maxX++;
+        //                 }
+        //                 while (!LevelGenerator.IsEntrance(maxX, maxY + 1))
+        //                 {
+        //                     maxY++;
+        //                 }
+        //                 rooms.Add(new Room(minX, minY, maxX, maxY));
+        //             }
+        //         }
+        //     }
+        //     foreach (Vector2Int entrance in entrances)
+        //     {
+        //         Room _room = RoomAtPos(entrance.x + 1, entrance.y);
+        //         if (_room != null)
+        //         {
+        //             _room.entrances.Add(entrance);
+        //         }
+        //         _room = RoomAtPos(entrance.x - 1, entrance.y);
+        //         if (_room != null)
+        //         {
+        //             _room.entrances.Add(entrance);
+        //         }
+        //         _room = RoomAtPos(entrance.x, entrance.y + 1);
+        //         if (_room != null)
+        //         {
+        //             _room.entrances.Add(entrance);
+        //         }
+        //         _room = RoomAtPos(entrance.x, entrance.y - 1);
+        //         if (_room != null)
+        //         {
+        //             _room.entrances.Add(entrance);
+        //         }
+        //     }
+        // }
+        // public void PlaceTorch(Room room)
+        // {
+        //     int _x = UnityEngine.Random.Range(room.MinX, room.MaxX);
+        //     int _y = UnityEngine.Random.Range(room.MinY, room.MaxY);
+        //     if (Math.Abs(_x - room.MinX) < Math.Abs(_x - room.MaxX))
+        //     {
+        //         _x = room.MinX;
+        //     }
+        //     else
+        //     {
+        //         _x = room.MaxX;
+        //     }
+        //     if (Math.Abs(_y - room.MinY) < Math.Abs(_y - room.MaxY))
+        //     {
+        //         _y = room.MinY;
+        //     }
+        //     else
+        //     {
+        //         _y = room.MaxY;
+        //     }
+        //     objects[_x, _y] = RoomObject.Torch;
+        // }
+        // public void PlaceTorches(int count)
+        // {
+        //     foreach (Room room in rooms)
+        //     {
+        //         PlaceTorch(room);
+        //     }
+        // }
     }
     public class Room
     {
@@ -142,10 +143,14 @@ namespace ExtensionMethods
             levelWidth = width;
             levelHeight = height;
             generatedLevel.tiles = new RoomTile[levelWidth, levelHeight];
+            generatedLevel.objects = new RoomObject[levelWidth, levelHeight];
 
             ResetCells(generatedLevel);
             RandomDivider(generatedLevel);
-            CleanMap(generatedLevel);
+            generatedLevel.tiles[0, 0] = RoomTile.Wall;
+            Debug.Log("Wall0:" + generatedLevel.tiles[0, 0]);
+            //CleanMap(generatedLevel);
+            Debug.Log("Wall1:" + generatedLevel.tiles[0, 0]);
 
             level = generatedLevel;
 
