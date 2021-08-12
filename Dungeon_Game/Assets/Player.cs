@@ -37,12 +37,12 @@ public class Player : MonoBehaviour
     void Update()
     {
 
-        /*
-        transform.Rotate(0, Input.GetAxis("Horizontal") * RotateSpeed, 0);
-        var forward = transform.TransformDirection(Vector3.forward);
-        float curSpeed = Speed * Input.GetAxis("Vertical");
-        characterController.SimpleMove(forward * curSpeed);
-        */
+
+        //transform.rotate(0, input.getaxis("horizontal") * rotatespeed, 0);
+        //var forward = transform.transformdirection(vector3.forward);
+        //float curspeed = speed * input.getaxis("vertical");
+        //charactercontroller.simplemove(forward * curspeed);
+
 
 
         if (fpsCam)
@@ -116,5 +116,5 @@ public class Player : MonoBehaviour
 
     public float Speed = 3.0F;
     public float RotateSpeed = 3.0F;
-    
+
 }
