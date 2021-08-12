@@ -9,6 +9,7 @@ public class Controller : MonoBehaviour
     public GameObject levelObject;
     public GameObject wallPrefab;
     public GameObject groundPrefab;
+    public GameObject exitPrefab;
     public GameObject player;
 
     // Start is called before the first frame update
@@ -44,14 +45,16 @@ public class Controller : MonoBehaviour
                     newGround.transform.SetParent(levelObject.transform, false);
                 }
             }
-            // Create Exit
-            
-            // Set Player Pos
-            Vector2Int newPos = LevelGenerator.RandomFreePos();
-            player.GetComponent<CharacterController>().enabled = false;
-            player.transform.position = new Vector3(newPos.x, 0, newPos.y);
-            player.GetComponent<CharacterController>().enabled = true;
         }
+        // Create Exit
+        Vector2Int newPos = LevelGenerator.RandomFreePos();
+        Instantiate(exitPrefab, new Vector3(newPos.x, 0, newPos.y), Quaternion.Euler(0, 0, 0));
+
+        // Set Player Pos
+        newPos = LevelGenerator.RandomFreePos();
+        player.GetComponent<CharacterController>().enabled = false;
+        player.transform.position = new Vector3(newPos.x, 0, newPos.y);
+        player.GetComponent<CharacterController>().enabled = true;
     }
 
     // Update is called once per frame
