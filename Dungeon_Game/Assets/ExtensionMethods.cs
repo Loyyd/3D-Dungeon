@@ -71,12 +71,12 @@ namespace ExtensionMethods
         }
         public void PlaceTorch(Room room)
         {
-            int _x = UnityEngine.Random.Range(room.MinX, room.MaxX);
-            int _y = UnityEngine.Random.Range(room.MinY, room.MaxY);
-
-            int count = 10;
+            int count = 30;
             while (true)
             {
+                int _x = UnityEngine.Random.Range(room.MinX, room.MaxX);
+                int _y = UnityEngine.Random.Range(room.MinY, room.MaxY);
+
                 int closest = 0;
                 float minDist = Math.Abs(_y - room.MaxY);
                 if (Math.Abs(_x - room.MaxX) < minDist)
@@ -115,12 +115,16 @@ namespace ExtensionMethods
                     objectAngles[_x, _y] = 180;
                 }
 
-                if (tiles[_x,_y]!=RoomTile.Wall || LevelGenerator.CountAdjacent(RoomTile.Wall, _x, _y) < 2)
+                if (tiles[_x, _y] != RoomTile.Wall || LevelGenerator.CountAdjacent(RoomTile.Wall, _x, _y) < 2)
                 {
-                    objectAngles[_x,_y] = 0;
-                    if(count==0) {
+                    objectAngles[_x, _y] = 0;
+                    if (count == 0)
+                    {
                         break;
-                    } else {
+                    }
+                    else
+                    {
+                        count--;
                         continue;
                     }
                 }
