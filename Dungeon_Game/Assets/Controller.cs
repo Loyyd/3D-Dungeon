@@ -58,10 +58,10 @@ public class Controller : MonoBehaviour
         {
             for (int j = 0; j < level.objects.GetLength(1); j++)
             {
-                if (level.objects[i, j] == RoomObject.None)
+                if (level.objects[i, j] == RoomObject.Torch)
                 {
                     // Spawn Torch
-                    GameObject o = Instantiate(torchPrefab, new Vector3(i, 0, j), Quaternion.Euler(0, 0, 0));
+                    GameObject o = Instantiate(torchPrefab, new Vector3(i, 0, j), Quaternion.Euler(0, level.objectAngles[i,j], 0));
                     o.transform.SetParent(levelObject.transform, false);
                 }
             }

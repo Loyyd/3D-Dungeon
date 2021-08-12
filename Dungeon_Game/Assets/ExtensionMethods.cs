@@ -10,7 +10,7 @@ namespace ExtensionMethods
         Ground = 1,
         Wall = 0,
     }
-        public enum RoomObject
+    public enum RoomObject
     {
         None = 0,
         Torch = 1,
@@ -20,8 +20,15 @@ namespace ExtensionMethods
     {
         public RoomTile[,] tiles;
         public RoomObject[,] objects;
+        public float[,] objectAngles;
         List<Room> rooms = new List<Room>();
         List<Vector2Int> entrances = new List<Vector2Int>();
+        public Level(int width, int height)
+        {
+            tiles = new RoomTile[width, height];
+            objects = new RoomObject[width, height];
+            objectAngles = new float[width, height];
+        }
         public Room FromPos(int x, int y)
         {
             foreach (Room room in rooms)
@@ -43,20 +50,21 @@ namespace ExtensionMethods
                     {
                         entrances.Add(new Vector2Int(i, j));
                     }
-                    else if (FromPos(i, j) == null)
+                    else if (tiles[i, j] == RoomTile.Ground && FromPos(i, j) == null)
                     {
                         int minX = i;
                         int minY = j;
                         int maxX = i;
                         int maxY = j;
-                        while (!LevelGenerator.IsEntrance(maxX + 1, maxY))
+                        while (tiles[maxX+1, maxY] != RoomTile.Wall && !LevelGenerator.IsEntrance(maxX + 1, maxY))
                         {
                             maxX++;
                         }
-                        while (!LevelGenerator.IsEntrance(maxX, maxY + 1))
+                        while (tiles[maxX, maxY+1] != RoomTile.Wall && !LevelGenerator.IsEntrance(maxX, maxY + 1))
                         {
                             maxY++;
                         }
+                        rooms.Add(new Room(minX, minY, maxX, maxY));
                     }
                 }
             }
@@ -65,22 +73,45 @@ namespace ExtensionMethods
         {
             int _x = UnityEngine.Random.Range(room.MinX, room.MaxX);
             int _y = UnityEngine.Random.Range(room.MinY, room.MaxY);
-            if (Math.Abs(_x - room.MinX) < Math.Abs(_x - room.MaxX))
+
+            int closest = 0;
+            float minDist = Math.Abs(_y - room.MaxY);
+            if (Math.Abs(_x - room.MaxX) < minDist)
             {
-                _x = room.MinX;
+                minDist = Math.Abs(_x - room.MaxX);
+                closest = 1;
             }
-            else
+            if (Math.Abs(_y - room.MinY) < minDist)
             {
-                _x = room.MaxX;
+                minDist = Math.Abs(_y - room.MinY);
+                closest = 2;
             }
-            if (Math.Abs(_y - room.MinY) < Math.Abs(_y - room.MaxY))
+            if (Math.Abs(_x - room.MinX) < minDist)
             {
-                _y = room.MinY;
+                minDist = Math.Abs(_x - room.MinX);
+                closest = 3;
             }
-            else
+
+            if (closest == 0)
             {
-                _y = room.MaxY;
+                _y = room.MaxY + 1;
+                objectAngles[_x, _y] = 270;
             }
+            else if (closest == 1)
+            {
+                _x = room.MaxX + 1;;
+            }
+            else if (closest == 2)
+            {
+                _y = room.MinY - 1;;
+                objectAngles[_x, _y] = 90;
+            }
+            else if (closest == 3)
+            {
+                _x = room.MinX - 1;;
+                objectAngles[_x, _y] = 180;
+            }
+
             objects[_x, _y] = RoomObject.Torch;
         }
         public void PlaceTorches(int count)
@@ -98,6 +129,13 @@ namespace ExtensionMethods
         public int MaxX { get; set; }
         public int MaxY { get; set; }
         List<Vector2Int> exit = new List<Vector2Int>();
+        public Room(int minX, int minY, int maxX, int maxY)
+        {
+            MinX = minX;
+            MinY = minY;
+            MaxX = maxX;
+            MaxY = maxY;
+        }
     }
     public static class LevelGenerator
     {
@@ -108,17 +146,16 @@ namespace ExtensionMethods
 
         public static Level Generate(int width, int height)
         {
-            Level generatedLevel = new Level();
+            Level generatedLevel = new Level(width, height);
             levelWidth = width;
             levelHeight = height;
-            generatedLevel.tiles = new RoomTile[levelWidth, levelHeight];
-            generatedLevel.objects = new RoomObject[levelWidth, levelHeight];
 
             ResetCells(generatedLevel);
             RandomDivider(generatedLevel);
             CleanMap(generatedLevel);
 
             level = generatedLevel;
+            level.FindRooms();
 
             return level;
         }
