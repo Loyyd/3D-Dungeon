@@ -56,11 +56,11 @@ namespace ExtensionMethods
                         int minY = j;
                         int maxX = i;
                         int maxY = j;
-                        while (tiles[maxX+1, maxY] != RoomTile.Wall && !LevelGenerator.IsEntrance(maxX + 1, maxY))
+                        while (tiles[maxX + 1, maxY] != RoomTile.Wall && !LevelGenerator.IsEntrance(maxX + 1, maxY))
                         {
                             maxX++;
                         }
-                        while (tiles[maxX, maxY+1] != RoomTile.Wall && !LevelGenerator.IsEntrance(maxX, maxY + 1))
+                        while (tiles[maxX, maxY + 1] != RoomTile.Wall && !LevelGenerator.IsEntrance(maxX, maxY + 1))
                         {
                             maxY++;
                         }
@@ -74,45 +74,62 @@ namespace ExtensionMethods
             int _x = UnityEngine.Random.Range(room.MinX, room.MaxX);
             int _y = UnityEngine.Random.Range(room.MinY, room.MaxY);
 
-            int closest = 0;
-            float minDist = Math.Abs(_y - room.MaxY);
-            if (Math.Abs(_x - room.MaxX) < minDist)
+            int count = 10;
+            while (true)
             {
-                minDist = Math.Abs(_x - room.MaxX);
-                closest = 1;
-            }
-            if (Math.Abs(_y - room.MinY) < minDist)
-            {
-                minDist = Math.Abs(_y - room.MinY);
-                closest = 2;
-            }
-            if (Math.Abs(_x - room.MinX) < minDist)
-            {
-                minDist = Math.Abs(_x - room.MinX);
-                closest = 3;
-            }
+                int closest = 0;
+                float minDist = Math.Abs(_y - room.MaxY);
+                if (Math.Abs(_x - room.MaxX) < minDist)
+                {
+                    minDist = Math.Abs(_x - room.MaxX);
+                    closest = 1;
+                }
+                if (Math.Abs(_y - room.MinY) < minDist)
+                {
+                    minDist = Math.Abs(_y - room.MinY);
+                    closest = 2;
+                }
+                if (Math.Abs(_x - room.MinX) < minDist)
+                {
+                    minDist = Math.Abs(_x - room.MinX);
+                    closest = 3;
+                }
 
-            if (closest == 0)
-            {
-                _y = room.MaxY + 1;
-                objectAngles[_x, _y] = 270;
-            }
-            else if (closest == 1)
-            {
-                _x = room.MaxX + 1;;
-            }
-            else if (closest == 2)
-            {
-                _y = room.MinY - 1;;
-                objectAngles[_x, _y] = 90;
-            }
-            else if (closest == 3)
-            {
-                _x = room.MinX - 1;;
-                objectAngles[_x, _y] = 180;
-            }
+                if (closest == 0)
+                {
+                    _y = room.MaxY + 1;
+                    objectAngles[_x, _y] = 270;
+                }
+                else if (closest == 1)
+                {
+                    _x = room.MaxX + 1; ;
+                }
+                else if (closest == 2)
+                {
+                    _y = room.MinY - 1; ;
+                    objectAngles[_x, _y] = 90;
+                }
+                else if (closest == 3)
+                {
+                    _x = room.MinX - 1; ;
+                    objectAngles[_x, _y] = 180;
+                }
 
-            objects[_x, _y] = RoomObject.Torch;
+                if (tiles[_x,_y]!=RoomTile.Wall || LevelGenerator.CountAdjacent(RoomTile.Wall, _x, _y) < 2)
+                {
+                    objectAngles[_x,_y] = 0;
+                    if(count==0) {
+                        break;
+                    } else {
+                        continue;
+                    }
+                }
+                else
+                {
+                    objects[_x, _y] = RoomObject.Torch;
+                    break;
+                }
+            }
         }
         public void PlaceTorches(int count)
         {
@@ -170,18 +187,6 @@ namespace ExtensionMethods
                 }
                 Console.Write("\n");
             }
-        }
-
-        static void Main(string[] args)
-        {
-            while (true)
-            {
-                String[] input = Console.ReadLine().Split(',');
-                int width = Convert.ToInt32(input[0]);
-                int height = Convert.ToInt32(input[1]);
-                PrintLevel(Generate(width, height));
-            }
-
         }
 
         static void CleanMap(Level level)
