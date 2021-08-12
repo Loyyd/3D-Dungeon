@@ -1,9 +1,19 @@
 fileFormatVersion: 2
-guid: 610d62417b1ebf449a059648a232a076
+guid: 9a921d0f0d7bb9947befe3d265996f62
 ModelImporter:
   serializedVersion: 20200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Torch Metal
+    second: {fileID: 2100000, guid: 5725f163c36c05e41aad4c4fa6d82cf8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Torch Wood
+    second: {fileID: 2100000, guid: d24f39a39c4f95c47a80997440fa5766, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

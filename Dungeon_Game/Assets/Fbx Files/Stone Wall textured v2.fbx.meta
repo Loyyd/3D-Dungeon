@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 766c104d897d11441a32ea91c12df2c1
+guid: a091b1e403f65a045ae9ec9354be2054
 ModelImporter:
   serializedVersion: 20200
   internalIDToNameTable: []
@@ -7,8 +7,8 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Floor Stone Pattern.001
-    second: {fileID: 2100000, guid: 3deb380d78498ec4b803a8770c55e614, type: 2}
+      name: Stone Wall
+    second: {fileID: 2100000, guid: c9cab95c40c8b7145a508fee4deee265, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

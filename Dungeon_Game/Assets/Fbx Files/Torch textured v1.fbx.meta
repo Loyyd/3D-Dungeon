@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 77da0dd6a409b374383d81d7f460f07e
+guid: 3d0c3a5170593f24da50b28399726f0e
 ModelImporter:
   serializedVersion: 20200
   internalIDToNameTable: []
@@ -7,8 +7,13 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Stone Wall
-    second: {fileID: 2100000, guid: c9cab95c40c8b7145a508fee4deee265, type: 2}
+      name: Torch Metal
+    second: {fileID: 2100000, guid: d24f39a39c4f95c47a80997440fa5766, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Torch Wood
+    second: {fileID: 2100000, guid: 5725f163c36c05e41aad4c4fa6d82cf8, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
