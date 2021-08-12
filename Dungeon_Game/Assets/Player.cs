@@ -36,6 +36,15 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+
+        /*
+        transform.Rotate(0, Input.GetAxis("Horizontal") * RotateSpeed, 0);
+        var forward = transform.TransformDirection(Vector3.forward);
+        float curSpeed = Speed * Input.GetAxis("Vertical");
+        characterController.SimpleMove(forward * curSpeed);
+        */
+
+
         if (fpsCam)
         {
             //set cam pos to player pos
@@ -98,4 +107,14 @@ public class Player : MonoBehaviour
             transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
         }
     }
+
+
+
+
+
+
+
+    public float Speed = 3.0F;
+    public float RotateSpeed = 3.0F;
+    
 }
