@@ -7,26 +7,22 @@ namespace ExtensionMethods
     public enum RoomTile
     {
         Empty = -1,
-        Ground = 1,
         Wall = 0,
-    }
-    public enum RoomObject
-    {
-        None = 0,
-        Torch = 1,
-        Chest = 2,
+        Ground = 1,
+        Torch = 2,
+        Chest = 3,
     }
     public class Level
     {
         public RoomTile[,] tiles;
-        public RoomObject[,] objects;
+        public RoomTile[,] objects;
         public float[,] objectAngles;
         List<Room> rooms = new List<Room>();
         List<Vector2Int> entrances = new List<Vector2Int>();
         public Level(int width, int height)
         {
             tiles = new RoomTile[width, height];
-            objects = new RoomObject[width, height];
+            objects = new RoomTile[width, height];
             objectAngles = new float[width, height];
         }
         public Room FromPos(int x, int y)
@@ -69,7 +65,7 @@ namespace ExtensionMethods
                 }
             }
         }
-        public void PlaceTorch(Room room)
+        public void PlaceTorch(List<Vector2Int> torchPositions, Room room)
         {
             int count = 30;
             while (true)
@@ -115,7 +111,14 @@ namespace ExtensionMethods
                     objectAngles[_x, _y] = 180;
                 }
 
-                if (tiles[_x, _y] != RoomTile.Wall || LevelGenerator.CountAdjacent(RoomTile.Wall, _x, _y) < 2)
+                minDist = 9999;
+                foreach(Vector2Int pos in  torchPositions) {
+                    float curDist = Vector2.Distance(new Vector2(_x,_y), pos);
+                    if (curDist <  minDist) {
+                        minDist = curDist;
+                    }
+                }
+                if (minDist<5 || tiles[_x, _y] != RoomTile.Wall || LevelGenerator.CountAdjacent(RoomTile.Wall, _x, _y) < 2)
                 {
                     objectAngles[_x, _y] = 0;
                     if (count == 0)
@@ -130,16 +133,21 @@ namespace ExtensionMethods
                 }
                 else
                 {
-                    objects[_x, _y] = RoomObject.Torch;
+                    objects[_x, _y] = RoomTile.Torch;
+                    torchPositions.Add(new Vector2Int(_x,_y));
                     break;
                 }
             }
         }
-        public void PlaceTorches(int count)
+        public void PlaceTorches(int frequency)
         {
+            List<Vector2Int> torchPositions = new List<Vector2Int>();
             foreach (Room room in rooms)
             {
-                PlaceTorch(room);
+                for (int i = 0; i < room.GetSurfaceArea() / 16; i++)
+                {
+                    PlaceTorch(torchPositions, room);
+                }
             }
         }
     }
@@ -156,6 +164,10 @@ namespace ExtensionMethods
             MinY = minY;
             MaxX = maxX;
             MaxY = maxY;
+        }
+        public int GetSurfaceArea()
+        {
+            return (MaxX - MinX) * (MaxY - MinY);
         }
     }
     public static class LevelGenerator
