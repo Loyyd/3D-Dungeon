@@ -257,7 +257,7 @@ namespace ExtensionMethods
             }
         }
 
-        static void DFS(Level level, int pos, List<int> visited)
+        static void DFS(Level level, int pos, List<int> visited, List<Vector2Int> notFree)
         {
             int w = level.tiles.GetLength(0);
             int h = level.tiles.GetLength(1);
@@ -265,18 +265,28 @@ namespace ExtensionMethods
             {
                 return;
             }
-            if (level.tiles[pos % w, pos / w] == 0)
+            foreach(Vector2Int v in notFree) {
+                if(v.x == pos%w && v.y == pos / w) {
+                    return;
+                }
+            }
+            if (level.tiles[pos % w, pos / w] == RoomTile.Ground)
+            {
+                visited.Add(pos);
+                if (pos % w != w - 1) DFS(level, pos + 1, visited, notFree);
+                if (pos / w != h - 1) DFS(level, pos + w, visited, notFree);
+                if (pos % w != 0) DFS(level, pos - 1, visited, notFree);
+                if (pos / w != 0) DFS(level, pos - w, visited, notFree);
+            }
+            else
             {
                 return;
             }
-            visited.Add(pos);
-            if (pos % w != w - 1) DFS(level, pos + 1, visited);
-            if (pos / w != h - 1) DFS(level, pos + w, visited);
-            if (pos % w != 0) DFS(level, pos - 1, visited);
-            if (pos / w != 0) DFS(level, pos - w, visited);
         }
-
-        static Boolean IsConnected(Level level)
+        static Boolean IsConnected(Level level) {
+            return IsConnected(level, new List<Vector2Int>());
+        }
+        static Boolean IsConnected(Level level, List<Vector2Int> notFree)
         {
             int w = level.tiles.GetLength(0);
             int h = level.tiles.GetLength(1);
@@ -292,7 +302,7 @@ namespace ExtensionMethods
             }
             if (pos != -1)
             {
-                DFS(level, pos, visited);
+                DFS(level, pos, visited, notFree);
             }
             int free = 0;
             for (int i = 0; i < w * h; i++)
@@ -302,7 +312,7 @@ namespace ExtensionMethods
                     free++;
                 }
             }
-            if (free == visited.Count)
+            if (free == visited.Count-notFree.Count)
             {
                 return true;
             }
