@@ -7,15 +7,16 @@ public class Player : MonoBehaviour
 {
     public bool fpsCam = true;
     public float fpsCamHeight = 1;
-    public float walkingSpeed = 7.5f;
-    public float runningSpeed = 11.5f;
-    public float jumpSpeed = 8.0f;
-    public float gravity = 20.0f;
+    public float walkingSpeed = 3f;
+    public float runningSpeed = 4.5f;
+    public float jumpSpeed = 4.0f;
+    public float gravity = 10.0f;
     public Camera playerCamera;
-    public float lookSpeed = 16.0f;
+    public float lookSpeed = 6.0f;
     public float lookXLimit = 45.0f;
     public float Speed = 3.0F;
-
+    public SkinnedMeshRenderer meshRenderer;
+    public GameObject upwardPointer;
     CharacterController characterController;
     Vector3 moveDirection = Vector3.zero;
     Vector3 lastPos = new Vector3(0, 0, 0);
@@ -27,6 +28,7 @@ public class Player : MonoBehaviour
     void Start()
     {
         characterController = GetComponent<CharacterController>();
+        upwardPointer = Instantiate(upwardPointer);
 
         if (fpsCam)
         {
@@ -38,21 +40,24 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-
-        //Vector3 rotation = lookRotation.eulerAngles;
-        //transform.rotation = Quaternion.Euler(0f, rotation.y, 0f);
-
+        if(Input.GetKeyDown(KeyCode.C)) {
+            fpsCam = !fpsCam;
+        }
 
         if (fpsCam)
         {
-            //set cam pos to player pos
+            // deactivate player mesh renderer
+            meshRenderer.enabled = false;
+
+            // set cam pos to player pos
             Vector3 pos = transform.position;
             playerCamera.transform.position = new Vector3(pos.x, pos.y + fpsCamHeight, pos.z);
         }
 
         // We are grounded, so recalculate move direction based on axes
-        Vector3 forward = transform.TransformDirection(Vector3.forward);
-        Vector3 right = transform.TransformDirection(Vector3.right);
+        upwardPointer.transform.rotation = Quaternion.Euler(0, playerCamera.transform.rotation.eulerAngles.y + 90, 0);
+        Vector3 forward = upwardPointer.transform.TransformDirection(Vector3.forward);
+        Vector3 right = upwardPointer.transform.TransformDirection(Vector3.right);
 
         GetComponent<UnitAnimator>().Run();
 
@@ -70,14 +75,8 @@ public class Player : MonoBehaviour
         float curSpeedZ = move.z;
 
         float movementDirectionY = moveDirection.y;
-        if (fpsCam)
-        {
-            moveDirection = (forward * curSpeedX) + (right * curSpeedZ);
-        }
-        else
-        {
-            moveDirection = new Vector3(curSpeedX, 0, -curSpeedZ);
-        }
+
+        moveDirection = (forward * curSpeedX) + (right * curSpeedZ);
 
         if (Input.GetButton("Jump") && canMove && characterController.isGrounded)
         {
@@ -102,7 +101,10 @@ public class Player : MonoBehaviour
         Vector3 _lastPos = new Vector3(lastPos.x, 0, lastPos.z);
         Vector3 _curPos = new Vector3(transform.position.x, 0, transform.position.z);
         Vector3 _dir = _curPos - _lastPos;
-        if(_dir.magnitude/Time.deltaTime > 0.1f) {
+
+        // For 3rd person camera
+        if (!fpsCam && _dir.magnitude / Time.deltaTime > 0.1f)
+        {
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(_dir), 0.1f);
         }
 
@@ -111,7 +113,7 @@ public class Player : MonoBehaviour
         {
             rotationX += -Input.GetAxis("Mouse Y") * lookSpeed;
             rotationX = Mathf.Clamp(rotationX, -lookXLimit, lookXLimit);
-            playerCamera.transform.localRotation = Quaternion.Euler(rotationX, transform.eulerAngles.y - 90, 0);
+            playerCamera.transform.localRotation = Quaternion.Euler(rotationX, transform.eulerAngles.y, 0);
             transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
         }
 
