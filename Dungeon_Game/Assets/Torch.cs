@@ -17,7 +17,7 @@ public class Torch : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Vector3.Distance(Player.transform.position, transform.position) <= 1f)
+        if (Vector3.Distance(Player.transform.position, transform.position) <= 1.5f)
         {
             Light.SetActive(true);
 

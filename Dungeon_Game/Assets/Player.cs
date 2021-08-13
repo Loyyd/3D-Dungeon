@@ -37,12 +37,8 @@ public class Player : MonoBehaviour
     void Update()
     {
 
-
-        //transform.rotate(0, input.getaxis("horizontal") * rotatespeed, 0);
-        //var forward = transform.transformdirection(vector3.forward);
-        //float curspeed = speed * input.getaxis("vertical");
-        //charactercontroller.simplemove(forward * curspeed);
-
+        //Vector3 rotation = lookRotation.eulerAngles;
+        //transform.rotation = Quaternion.Euler(0f, rotation.y, 0f);
 
 
         if (fpsCam)
@@ -54,6 +50,7 @@ public class Player : MonoBehaviour
 
         // We are grounded, so recalculate move direction based on axes
         Vector3 forward = transform.TransformDirection(Vector3.forward);
+        GetComponent<UnitAnimator>().Run();
         Vector3 right = transform.TransformDirection(Vector3.right);
         // Press Left Shift to run
         bool isRunning = Input.GetKey(KeyCode.LeftShift);
