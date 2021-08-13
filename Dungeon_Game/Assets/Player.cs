@@ -14,9 +14,11 @@ public class Player : MonoBehaviour
     public Camera playerCamera;
     public float lookSpeed = 16.0f;
     public float lookXLimit = 45.0f;
+    public float Speed = 3.0F;
 
     CharacterController characterController;
     Vector3 moveDirection = Vector3.zero;
+    Vector3 lastPos = new Vector3(0, 0, 0);
     float rotationX = 0;
 
     [HideInInspector]
@@ -50,8 +52,10 @@ public class Player : MonoBehaviour
 
         // We are grounded, so recalculate move direction based on axes
         Vector3 forward = transform.TransformDirection(Vector3.forward);
-        GetComponent<UnitAnimator>().Run();
         Vector3 right = transform.TransformDirection(Vector3.right);
+
+        GetComponent<UnitAnimator>().Run();
+
         // Press Left Shift to run
         bool isRunning = Input.GetKey(KeyCode.LeftShift);
 
@@ -94,6 +98,13 @@ public class Player : MonoBehaviour
 
         // Move the controller
         characterController.Move(moveDirection * Time.deltaTime);
+        // Set rotation
+        Vector3 _lastPos = new Vector3(lastPos.x, 0, lastPos.z);
+        Vector3 _curPos = new Vector3(transform.position.x, 0, transform.position.z);
+        Vector3 _dir = _curPos - _lastPos;
+        if(_dir.magnitude/Time.deltaTime > 0.1f) {
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(_dir), 0.1f);
+        }
 
         // Player and Camera rotation
         if (canMove && fpsCam)
@@ -103,15 +114,7 @@ public class Player : MonoBehaviour
             playerCamera.transform.localRotation = Quaternion.Euler(rotationX, transform.eulerAngles.y - 90, 0);
             transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
         }
+
+        lastPos = transform.position;
     }
-
-
-
-
-
-
-
-    public float Speed = 3.0F;
-    public float RotateSpeed = 3.0F;
-
 }
