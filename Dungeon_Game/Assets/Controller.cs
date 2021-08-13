@@ -24,6 +24,40 @@ public class Controller : MonoBehaviour
         levelObject = new GameObject("Level");
         LevelGenerator.level = LevelGenerator.Generate(width, height);
         Level level = LevelGenerator.level;
+        Vector2Int _newPos;
+
+
+        List<Vector2Int> possiblePositions = new List<Vector2Int>();
+        for (int i = 0; i < level.tiles.GetLength(0) - 1; i++)
+        {
+            for (int j = 0; j < level.tiles.GetLength(1) - 1; j++)
+            {
+                if (LevelGenerator.GetTile(i, j) == RoomTile.Ground
+                && LevelGenerator.GetTile(i + 1, j) == RoomTile.Ground
+                && LevelGenerator.GetTile(i, j + 1) == RoomTile.Ground
+                && LevelGenerator.GetTile(i + 1, j + 1) == RoomTile.Ground)
+                {
+                    possiblePositions.Add(new Vector2Int(i, j));
+                }
+            }
+        }
+        // CREATE EXIT
+        System.Random random = new System.Random();
+        _newPos = possiblePositions[(int)UnityEngine.Random.Range(0,possiblePositions.Count)];
+        // Update tiles array
+        level.tiles[_newPos.x, _newPos.y] = RoomTile.Exit;
+        level.tiles[_newPos.x + 1, _newPos.y] = RoomTile.Exit;
+        level.tiles[_newPos.x, _newPos.y + 1] = RoomTile.Exit;
+        level.tiles[_newPos.x + 1, _newPos.y + 1] = RoomTile.Exit;
+        // Instantiate stairs object
+        GameObject exit = Instantiate(exitPrefab, new Vector3(_newPos.x + 0.5f, 0, _newPos.y + 0.5f), Quaternion.Euler(0, 0, 0));
+        exit.GetComponent<ExitDoor>().player = player;
+        exit.GetComponent<ExitDoor>().controller = this;
+        exit.transform.SetParent(levelObject.transform, false);
+
+
+        // PLACE OBJECTS
+        level.PlaceTorches(1);
 
         // SPAWN GROUND AND WALLS
         for (int i = 0; i < level.tiles.GetLength(0); i++)
@@ -50,9 +84,6 @@ public class Controller : MonoBehaviour
             }
         }
 
-        // PLACE OBJECTS
-        level.PlaceTorches(1);
-
         // SPAWN OBJECTS
         for (int i = 0; i < level.objects.GetLength(0); i++)
         {
@@ -61,23 +92,16 @@ public class Controller : MonoBehaviour
                 if (level.objects[i, j] == RoomTile.Torch)
                 {
                     // Spawn Torch
-                    GameObject o = Instantiate(torchPrefab, new Vector3(i, 0, j), Quaternion.Euler(0, level.objectAngles[i,j], 0));
+                    GameObject o = Instantiate(torchPrefab, new Vector3(i, 0, j), Quaternion.Euler(0, level.objectAngles[i, j], 0));
                     o.transform.SetParent(levelObject.transform, false);
                 }
             }
         }
 
-        // Create Exit
-        Vector2Int newPos = LevelGenerator.RandomFreePos();
-        GameObject exit = Instantiate(exitPrefab, new Vector3(newPos.x, 0, newPos.y), Quaternion.Euler(0, 0, 0));
-        exit.GetComponent<ExitDoor>().player = player;
-        exit.GetComponent<ExitDoor>().controller = this;
-        exit.transform.SetParent(levelObject.transform, false);
-
         // Set Player Pos
-        newPos = LevelGenerator.RandomFreePos();
+        _newPos = LevelGenerator.RandomFreePos();
         player.GetComponent<CharacterController>().enabled = false;
-        player.transform.position = new Vector3(newPos.x, 0, newPos.y);
+        player.transform.position = new Vector3(_newPos.x, 0, _newPos.y);
         player.GetComponent<CharacterController>().enabled = true;
     }
 

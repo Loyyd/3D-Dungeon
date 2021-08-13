@@ -9,8 +9,9 @@ namespace ExtensionMethods
         Empty = -1,
         Wall = 0,
         Ground = 1,
-        Torch = 2,
-        Chest = 3,
+        Exit = 2,
+        Torch = 3,
+        Chest = 4,
     }
     public class Level
     {
@@ -23,6 +24,13 @@ namespace ExtensionMethods
         {
             tiles = new RoomTile[width, height];
             objects = new RoomTile[width, height];
+            for (int i = 0; i < objects.GetLength(0); i++)
+            {
+                for (int j = 0; j < objects.GetLength(1); j++)
+                {
+                    objects[i, j] = RoomTile.Empty;
+                }
+            }
             objectAngles = new float[width, height];
         }
         public Room FromPos(int x, int y)
@@ -112,13 +120,15 @@ namespace ExtensionMethods
                 }
 
                 minDist = 9999;
-                foreach(Vector2Int pos in  torchPositions) {
-                    float curDist = Vector2.Distance(new Vector2(_x,_y), pos);
-                    if (curDist <  minDist) {
+                foreach (Vector2Int pos in torchPositions)
+                {
+                    float curDist = Vector2.Distance(new Vector2(_x, _y), pos);
+                    if (curDist < minDist)
+                    {
                         minDist = curDist;
                     }
                 }
-                if (minDist<5 || tiles[_x, _y] != RoomTile.Wall || LevelGenerator.CountAdjacent(RoomTile.Wall, _x, _y) < 2)
+                if (minDist < 5 || tiles[_x, _y] != RoomTile.Wall || LevelGenerator.CountAdjacent(RoomTile.Wall, _x, _y) < 2)
                 {
                     objectAngles[_x, _y] = 0;
                     if (count == 0)
@@ -134,7 +144,7 @@ namespace ExtensionMethods
                 else
                 {
                     objects[_x, _y] = RoomTile.Torch;
-                    torchPositions.Add(new Vector2Int(_x,_y));
+                    torchPositions.Add(new Vector2Int(_x, _y));
                     break;
                 }
             }
@@ -505,11 +515,44 @@ namespace ExtensionMethods
             }
             return freeSpots[random.Next(freeSpots.Count)];
         }
+        public static RoomTile GetTile(int i, int j)
+        {
+            if (i < level.tiles.GetLength(0) - 1)
+            {
+                if (level.tiles[i, j] == RoomTile.Empty)
+                {
+                    return RoomTile.Empty;
+                }
+                else
+                {
+                    if (level.objects[i, j] != RoomTile.Empty)
+                    {
+                        return level.objects[i, j];
+                    }
+                    else
+                    {
+                        return level.tiles[i, j];
+                    }
+                }
+            }
+            else
+            {
+                return RoomTile.Empty;
+            }
+        }
         public static RoomTile GetLeft(int i, int j)
         {
             if (i < level.tiles.GetLength(0) - 1)
             {
-                return level.tiles[i + 1, j];
+                if (level.objects[i + 1, j] != RoomTile.Empty)
+                {
+                    return level.objects[i + 1, j];
+                }
+                else
+                {
+                    return level.tiles[i + 1, j];
+                }
+
             }
             else
             {
@@ -520,7 +563,14 @@ namespace ExtensionMethods
         {
             if (i > 0)
             {
-                return level.tiles[i - 1, j];
+                if (level.objects[i - 1, j] != RoomTile.Empty)
+                {
+                    return level.objects[i - 1, j];
+                }
+                else
+                {
+                    return level.tiles[i - 1, j];
+                }
             }
             else
             {
@@ -531,18 +581,33 @@ namespace ExtensionMethods
         {
             if (j > 0)
             {
-                return level.tiles[i, j - 1];
+                if (level.objects[i, j - 1] != RoomTile.Empty)
+                {
+                    return level.objects[i, j - 1];
+                }
+                else
+                {
+                    return level.tiles[i, j - 1];
+                }
             }
             else
             {
                 return RoomTile.Empty;
+
             }
         }
         public static RoomTile GetBelow(int i, int j)
         {
             if (j < level.tiles.GetLength(1) - 1)
             {
-                return level.tiles[i, j + 1];
+                if (level.objects[i, j + 1] != RoomTile.Empty)
+                {
+                    return level.objects[i, j + 1];
+                }
+                else
+                {
+                    return level.tiles[i, j + 1];
+                }
             }
             else
             {
