@@ -11,6 +11,12 @@ public class Controller : MonoBehaviour
     public GameObject torchPrefab;
     public GameObject exitPrefab;
     public GameObject player;
+    
+    [HideInInspector]
+    public int maxHP = 100;
+    public int hp = 100;
+    public int levelNum = 1;
+
 
     // Start is called before the first frame update
     void Start()
