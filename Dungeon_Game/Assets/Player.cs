@@ -37,6 +37,9 @@ public class Player : MonoBehaviour
     void Update()
     {
 
+        //Vector3 rotation = lookRotation.eulerAngles;
+        //transform.rotation = Quaternion.Euler(0f, rotation.y, 0f);
+
 
         if (fpsCam)
         {

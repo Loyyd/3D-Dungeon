@@ -236,7 +236,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 349071e15104d5f449a2b12424d04620, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Player: {fileID: 2052183526111229497, guid: 15f71a46bdc69b540ac6f2b6b8973f32, type: 3}
+  Player: {fileID: 5818344132379131374, guid: 15f71a46bdc69b540ac6f2b6b8973f32, type: 3}
   Light: {fileID: 954104624704525404}
   Particle: {fileID: 7090816875451991800}
 --- !u!1 &7090816875451991800
