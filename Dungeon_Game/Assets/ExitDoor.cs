@@ -11,7 +11,7 @@ public class ExitDoor : MonoBehaviour
     void Update()
     {
         Vector3 plyPos = player.transform.position;
-        if((plyPos - transform.position).magnitude < 0.3) {
+        if((plyPos - transform.position).magnitude < 0.5) {
             controller.newMap(20,20);
         }
     }
