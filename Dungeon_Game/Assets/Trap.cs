@@ -11,6 +11,7 @@ public class Trap : MonoBehaviour
     private void Start()
     {
         Animation = Spikes.GetComponent<Animator>();
+        Player = GameObject.Find("Player").transform;
     }
     void Update()
     {

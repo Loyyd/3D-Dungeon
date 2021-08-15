@@ -9,6 +9,7 @@ public class Controller : MonoBehaviour
     public GameObject wallPrefab;
     public GameObject groundPrefab;
     public GameObject torchPrefab;
+    public GameObject spikesPrefab;
     public GameObject exitPrefab;
     public GameObject skeletonPrefab;
     public GameObject player;
@@ -46,30 +47,7 @@ public class Controller : MonoBehaviour
         Vector2Int _newPos;
 
         // CREATE EXIT
-        List<Vector2Int> possiblePositions = new List<Vector2Int>();
-        for (int i = 0; i < level.tiles.GetLength(0) - 1; i++)
-        {
-            for (int j = 0; j < level.tiles.GetLength(1) - 1; j++)
-            {
-                // 2x2 area is free
-                if (LevelGenerator.GetTile(i, j) == RoomTile.Ground
-                && LevelGenerator.GetTile(i + 1, j) == RoomTile.Ground
-                && LevelGenerator.GetTile(i, j + 1) == RoomTile.Ground
-                && LevelGenerator.GetTile(i + 1, j + 1) == RoomTile.Ground
-                // no entrance on adjacent squares
-                && !LevelGenerator.IsEntrance(i + 2, j)
-                && !LevelGenerator.IsEntrance(i + 2, j+1)
-                && !LevelGenerator.IsEntrance(i + 1, j+2)
-                && !LevelGenerator.IsEntrance(i, j+2)
-                && !LevelGenerator.IsEntrance(i - 1, j+1)
-                && !LevelGenerator.IsEntrance(i - 1, j)
-                && !LevelGenerator.IsEntrance(i , j-1)
-                && !LevelGenerator.IsEntrance(i + 1, j-1))
-                {
-                    possiblePositions.Add(new Vector2Int(i, j));
-                }
-            }
-        }
+        List<Vector2Int> possiblePositions = LevelGenerator.freePosNotAtEntrance(2, 2);
         System.Random random = new System.Random();
         _newPos = possiblePositions[(int)UnityEngine.Random.Range(0, possiblePositions.Count)];
         // Update tiles array
@@ -85,6 +63,7 @@ public class Controller : MonoBehaviour
 
         // PLACE OBJECTS
         level.PlaceTorches(1);
+        level.PlaceSpikes(10);
 
         // SPAWN GROUND AND WALLS
         for (int i = 0; i < level.tiles.GetLength(0); i++)
@@ -117,6 +96,11 @@ public class Controller : MonoBehaviour
                 {
                     // Spawn Torch
                     GameObject o = Instantiate(torchPrefab, new Vector3(i, 0, j), Quaternion.Euler(0, level.objectAngles[i, j], 0), levelObject.transform);
+                }
+                if (level.objects[i, j] == RoomTile.Spikes)
+                {
+                    // Spawn Spikes
+                    GameObject o = Instantiate(spikesPrefab, new Vector3(i, 0, j), Quaternion.Euler(0, level.objectAngles[i, j], 0), levelObject.transform);
                 }
             }
         }

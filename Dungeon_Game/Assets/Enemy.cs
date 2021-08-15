@@ -6,7 +6,7 @@ public class Enemy : MonoBehaviour
 {
     Controller controller;
     Transform player;
-    int hitIntervall = 60;
+    int hitIntervall = 30;
     int hitCount;
     // Start is called before the first frame update
     void Start()

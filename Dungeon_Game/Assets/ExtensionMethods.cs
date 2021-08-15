@@ -12,6 +12,7 @@ namespace ExtensionMethods
         Exit = 2,
         Torch = 3,
         Chest = 4,
+        Spikes = 5,
     }
     public class Level
     {
@@ -144,7 +145,7 @@ namespace ExtensionMethods
                 }
                 else
                 {
-                    objectAngles[_x,_y] = objectAngle;
+                    objectAngles[_x, _y] = objectAngle;
                     objects[_x, _y] = RoomTile.Torch;
                     torchPositions.Add(new Vector2Int(_x, _y));
                     break;
@@ -160,6 +161,14 @@ namespace ExtensionMethods
                 {
                     PlaceTorch(torchPositions, room);
                 }
+            }
+        }
+        public void PlaceSpikes(int count)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                Vector2Int free = LevelGenerator.RandomFreePos();
+                objects[free.x, free.y] = RoomTile.Spikes;
             }
         }
     }
@@ -267,8 +276,10 @@ namespace ExtensionMethods
             {
                 return;
             }
-            foreach(Vector2Int v in notFree) {
-                if(v.x == pos%w && v.y == pos / w) {
+            foreach (Vector2Int v in notFree)
+            {
+                if (v.x == pos % w && v.y == pos / w)
+                {
                     return;
                 }
             }
@@ -285,7 +296,8 @@ namespace ExtensionMethods
                 return;
             }
         }
-        static Boolean IsConnected(Level level) {
+        static Boolean IsConnected(Level level)
+        {
             return IsConnected(level, new List<Vector2Int>());
         }
         static Boolean IsConnected(Level level, List<Vector2Int> notFree)
@@ -314,7 +326,7 @@ namespace ExtensionMethods
                     free++;
                 }
             }
-            if (free == visited.Count-notFree.Count)
+            if (free == visited.Count - notFree.Count)
             {
                 return true;
             }
@@ -511,6 +523,62 @@ namespace ExtensionMethods
                     level.tiles[i, j] = RoomTile.Wall;
                 }
             }
+        }
+        public static List<Vector2Int> freePosNotAtEntrance(int w, int h)
+        {
+            List<Vector2Int> freePositions = new List<Vector2Int>();
+            for (int i = 0; i < level.tiles.GetLength(0) - 1; i++)
+            {
+                for (int j = 0; j < level.tiles.GetLength(1) - 1; j++)
+                {
+                    // wxh area is free
+                    for (int k = i; k < i + w; k++)
+                    {
+                        for (int l = j; l < j + h; l++)
+                        {
+                            if (GetTile(k, l) != RoomTile.Ground)
+                            {
+                                goto end_of_loop;
+                            }
+                        }
+                    }
+                    for (int k = i; k < i + w; k++)
+                    {
+                        if (IsEntrance(k, j - 1)
+                        || IsEntrance(k, j + h))
+                        {
+                            goto end_of_loop;
+                        }
+                    }
+                    for (int l = j; l < j + h; l++)
+                    {
+                        if (IsEntrance(i - 1, l)
+                        || IsEntrance(i + w, l))
+                        {
+                            goto end_of_loop;
+                        }
+                    }
+                    freePositions.Add(new Vector2Int(i, j));
+                end_of_loop: { }
+                    // if (LevelGenerator.GetTile(i, j) == RoomTile.Ground
+                    // && LevelGenerator.GetTile(i + 1, j) == RoomTile.Ground
+                    // && LevelGenerator.GetTile(i, j + 1) == RoomTile.Ground
+                    // && LevelGenerator.GetTile(i + 1, j + 1) == RoomTile.Ground
+                    // // no entrance on adjacent squares
+                    // && !LevelGenerator.IsEntrance(i + 2, j)
+                    // && !LevelGenerator.IsEntrance(i + 2, j + 1)
+                    // && !LevelGenerator.IsEntrance(i + 1, j + 2)
+                    // && !LevelGenerator.IsEntrance(i, j + 2)
+                    // && !LevelGenerator.IsEntrance(i - 1, j + 1)
+                    // && !LevelGenerator.IsEntrance(i - 1, j)
+                    // && !LevelGenerator.IsEntrance(i, j - 1)
+                    // && !LevelGenerator.IsEntrance(i + 1, j - 1))
+                    // {
+                    //     freePositions.Add(new Vector2Int(i, j));
+                    // }
+                }
+            }
+            return freePositions;
         }
         public static Vector2Int RandomFreePos()
         {

@@ -20,7 +20,11 @@ public class Player : MonoBehaviour
     CharacterController characterController;
     Vector3 moveDirection = Vector3.zero;
     Vector3 lastPos = new Vector3(0, 0, 0);
+    public AudioSource stepsSound;
+    public AudioSource jump_up;
+    public AudioSource jump_land;
     float rotationX = 0;
+    bool landed = true;
 
     [HideInInspector]
     public bool canMove = true;
@@ -30,6 +34,7 @@ public class Player : MonoBehaviour
         //Debug.Log(transform.Find("Torch Light").position);
         characterController = GetComponent<CharacterController>();
         upwardPointer = Instantiate(upwardPointer);
+        stepsSound = GetComponent<AudioSource>();
 
         if (fpsCam)
         {
@@ -85,10 +90,19 @@ public class Player : MonoBehaviour
         float movementDirectionY = moveDirection.y;
 
         moveDirection = (forward * curSpeedX) + (right * curSpeedZ);
+        if (!moveDirection.Equals(Vector2.zero))
+        {
+            stepsSound.enabled = true;
+        }
+        else
+        {
+            stepsSound.enabled = false;
+        }
 
         if (Input.GetButton("Jump") && canMove && characterController.isGrounded)
         {
             moveDirection.y = jumpSpeed;
+            jump_up.Play();
         }
         else
         {
@@ -100,7 +114,19 @@ public class Player : MonoBehaviour
         // as an acceleration (ms^-2)
         if (!characterController.isGrounded)
         {
+            if (jump_up.isPlaying)
+            {
+                landed = false;
+            }
             moveDirection.y -= gravity * Time.deltaTime;
+        }
+        else
+        {
+            if (!landed)
+            {
+                jump_land.Play();
+                landed = true;
+            }
         }
 
         // Move the controller
@@ -118,7 +144,7 @@ public class Player : MonoBehaviour
 
             // Rotation by input direction
             Quaternion lookDirection = Quaternion.LookRotation(moveDirection);
-            lookDirection = Quaternion.Euler(0,lookDirection.eulerAngles.y,0);
+            lookDirection = Quaternion.Euler(0, lookDirection.eulerAngles.y, 0);
             transform.rotation = Quaternion.Slerp(transform.rotation, lookDirection, 0.1f);
         }
 
