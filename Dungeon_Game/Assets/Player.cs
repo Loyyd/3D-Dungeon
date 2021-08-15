@@ -27,6 +27,7 @@ public class Player : MonoBehaviour
 
     void Start()
     {
+        Application.targetFrameRate = 60;
         characterController = GetComponent<CharacterController>();
         upwardPointer = Instantiate(upwardPointer);
 

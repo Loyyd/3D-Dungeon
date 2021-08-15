@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 7963511659103532675}
   - component: {fileID: 7963511659103532674}
   m_Layer: 0
-  m_Name: Spikes
+  m_Name: SpikesMesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
