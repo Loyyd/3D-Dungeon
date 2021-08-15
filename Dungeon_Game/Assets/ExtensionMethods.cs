@@ -80,6 +80,7 @@ namespace ExtensionMethods
             {
                 int _x = UnityEngine.Random.Range(room.MinX, room.MaxX);
                 int _y = UnityEngine.Random.Range(room.MinY, room.MaxY);
+                float objectAngle = 0;
 
                 int closest = 0;
                 float minDist = Math.Abs(_y - room.MaxY);
@@ -102,21 +103,22 @@ namespace ExtensionMethods
                 if (closest == 0)
                 {
                     _y = room.MaxY + 1;
-                    objectAngles[_x, _y] = 270;
+                    objectAngle = 270;
                 }
                 else if (closest == 1)
                 {
-                    _x = room.MaxX + 1; ;
+                    _x = room.MaxX + 1;
+                    objectAngle = 0;
                 }
                 else if (closest == 2)
                 {
                     _y = room.MinY - 1; ;
-                    objectAngles[_x, _y] = 90;
+                    objectAngle = 90;
                 }
                 else if (closest == 3)
                 {
                     _x = room.MinX - 1; ;
-                    objectAngles[_x, _y] = 180;
+                    objectAngle = 180;
                 }
 
                 minDist = 9999;
@@ -130,7 +132,6 @@ namespace ExtensionMethods
                 }
                 if (minDist < 5 || tiles[_x, _y] != RoomTile.Wall || LevelGenerator.CountAdjacent(RoomTile.Wall, _x, _y) < 2)
                 {
-                    objectAngles[_x, _y] = 0;
                     if (count == 0)
                     {
                         break;
@@ -143,6 +144,7 @@ namespace ExtensionMethods
                 }
                 else
                 {
+                    objectAngles[_x,_y] = objectAngle;
                     objects[_x, _y] = RoomTile.Torch;
                     torchPositions.Add(new Vector2Int(_x, _y));
                     break;

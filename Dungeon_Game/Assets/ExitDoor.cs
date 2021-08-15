@@ -12,7 +12,7 @@ public class ExitDoor : MonoBehaviour
     {
         Vector3 plyPos = player.transform.position;
         if((plyPos - transform.position).magnitude < 0.7) {
-            controller.newMap(20,20);
+            controller.nextLevel();
         }
     }
 }

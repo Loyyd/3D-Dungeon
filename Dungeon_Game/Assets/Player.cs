@@ -27,6 +27,7 @@ public class Player : MonoBehaviour
 
     void Start()
     {
+        //Debug.Log(transform.Find("Torch Light").position);
         characterController = GetComponent<CharacterController>();
         upwardPointer = Instantiate(upwardPointer);
 
@@ -40,15 +41,22 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.C)) {
-            fpsCam = !fpsCam;
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            if (fpsCam)
+            {
+                fpsCam = false;
+                playerCamera.cullingMask = playerCamera.cullingMask | (1 << 3); ;
+            }
+            else
+            {
+                fpsCam = true;
+                playerCamera.cullingMask = playerCamera.cullingMask & ~(1 << 3);
+            }
         }
 
         if (fpsCam)
         {
-            // deactivate player mesh renderer
-            meshRenderer.enabled = false;
-
             // set cam pos to player pos
             Vector3 pos = transform.position;
             playerCamera.transform.position = new Vector3(pos.x, pos.y + fpsCamHeight, pos.z);
@@ -105,7 +113,13 @@ public class Player : MonoBehaviour
         // For 3rd person camera
         if (!fpsCam && _dir.magnitude / Time.deltaTime > 0.1f)
         {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(_dir), 0.1f);
+            // // Rotation by moving direction
+            // transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(_dir), 0.1f);
+
+            // Rotation by input direction
+            Quaternion lookDirection = Quaternion.LookRotation(moveDirection);
+            lookDirection = Quaternion.Euler(0,lookDirection.eulerAngles.y,0);
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookDirection, 0.1f);
         }
 
         // Player and Camera rotation

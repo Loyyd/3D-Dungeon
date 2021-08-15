@@ -10,20 +10,33 @@ public class Controller : MonoBehaviour
     public GameObject groundPrefab;
     public GameObject torchPrefab;
     public GameObject exitPrefab;
+    public GameObject skeletonPrefab;
     public GameObject player;
-    
+
     [HideInInspector]
     public int maxHP = 100;
     public int hp = 100;
+    public int arrows = 3;
     public int levelNum = 1;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        newMap(20, 20);
+        levelNum--;
+        nextLevel();
     }
-
+    public void Restart()
+    {
+        levelNum = 0;
+        hp = maxHP;
+        nextLevel();
+    }
+    public void nextLevel()
+    {
+        levelNum++;
+        newMap(18 + levelNum * 2, 18 + levelNum * 2);
+    }
     public void newMap(int width, int height)
     {
         Destroy(levelObject, 0);
@@ -32,24 +45,33 @@ public class Controller : MonoBehaviour
         Level level = LevelGenerator.level;
         Vector2Int _newPos;
 
-
+        // CREATE EXIT
         List<Vector2Int> possiblePositions = new List<Vector2Int>();
         for (int i = 0; i < level.tiles.GetLength(0) - 1; i++)
         {
             for (int j = 0; j < level.tiles.GetLength(1) - 1; j++)
             {
+                // 2x2 area is free
                 if (LevelGenerator.GetTile(i, j) == RoomTile.Ground
                 && LevelGenerator.GetTile(i + 1, j) == RoomTile.Ground
                 && LevelGenerator.GetTile(i, j + 1) == RoomTile.Ground
-                && LevelGenerator.GetTile(i + 1, j + 1) == RoomTile.Ground)
+                && LevelGenerator.GetTile(i + 1, j + 1) == RoomTile.Ground
+                // no entrance on adjacent squares
+                && !LevelGenerator.IsEntrance(i + 2, j)
+                && !LevelGenerator.IsEntrance(i + 2, j+1)
+                && !LevelGenerator.IsEntrance(i + 1, j+2)
+                && !LevelGenerator.IsEntrance(i, j+2)
+                && !LevelGenerator.IsEntrance(i - 1, j+1)
+                && !LevelGenerator.IsEntrance(i - 1, j)
+                && !LevelGenerator.IsEntrance(i , j-1)
+                && !LevelGenerator.IsEntrance(i + 1, j-1))
                 {
                     possiblePositions.Add(new Vector2Int(i, j));
                 }
             }
         }
-        // CREATE EXIT
         System.Random random = new System.Random();
-        _newPos = possiblePositions[(int)UnityEngine.Random.Range(0,possiblePositions.Count)];
+        _newPos = possiblePositions[(int)UnityEngine.Random.Range(0, possiblePositions.Count)];
         // Update tiles array
         level.tiles[_newPos.x, _newPos.y] = RoomTile.Exit;
         level.tiles[_newPos.x + 1, _newPos.y] = RoomTile.Exit;
@@ -60,7 +82,6 @@ public class Controller : MonoBehaviour
         exit.GetComponent<ExitDoor>().player = player;
         exit.GetComponent<ExitDoor>().controller = this;
         exit.transform.SetParent(levelObject.transform, false);
-
 
         // PLACE OBJECTS
         level.PlaceTorches(1);
@@ -73,19 +94,16 @@ public class Controller : MonoBehaviour
                 if (level.tiles[i, j] == RoomTile.Ground)
                 {
                     // Spawn Ground
-                    GameObject newGround = Instantiate(groundPrefab, new Vector3(i, 0, j), Quaternion.Euler(0, 0, 0));
-                    newGround.transform.SetParent(levelObject.transform, false);
+                    GameObject newGround = Instantiate(groundPrefab, new Vector3(i, 0, j), Quaternion.Euler(0, 0, 0), levelObject.transform);
                 }
 
                 else if (level.tiles[i, j] == RoomTile.Wall)
                 {
                     // Spawn Wall
-                    GameObject newWall = Instantiate(wallPrefab, new Vector3(i, 0, j), Quaternion.Euler(0, 0, 0));
+                    GameObject newWall = Instantiate(wallPrefab, new Vector3(i, 0, j), Quaternion.Euler(0, 0, 0), levelObject.transform);
                     newWall.GetComponent<Wall>().SetMesh(level.tiles, i, j);
-                    newWall.transform.SetParent(levelObject.transform, false);
 
-                    GameObject newGround = Instantiate(groundPrefab, new Vector3(i, 0, j), Quaternion.Euler(0, 0, 0));
-                    newGround.transform.SetParent(levelObject.transform, false);
+                    GameObject newGround = Instantiate(groundPrefab, new Vector3(i, 0, j), Quaternion.Euler(0, 0, 0), levelObject.transform);
                 }
             }
         }
@@ -98,10 +116,18 @@ public class Controller : MonoBehaviour
                 if (level.objects[i, j] == RoomTile.Torch)
                 {
                     // Spawn Torch
-                    GameObject o = Instantiate(torchPrefab, new Vector3(i, 0, j), Quaternion.Euler(0, level.objectAngles[i, j], 0));
-                    o.transform.SetParent(levelObject.transform, false);
+                    GameObject o = Instantiate(torchPrefab, new Vector3(i, 0, j), Quaternion.Euler(0, level.objectAngles[i, j], 0), levelObject.transform);
                 }
             }
+        }
+
+        // SPAWN ENEMIES
+        int enemyCount = levelNum - 1;
+        Debug.Log(levelNum);
+        for (int i = 0; i < enemyCount; i++)
+        {
+            _newPos = LevelGenerator.RandomFreePos();
+            Instantiate(skeletonPrefab, new Vector3(_newPos.x, 0, _newPos.y), new Quaternion(), levelObject.transform);
         }
 
         // Set Player Pos
@@ -114,9 +140,14 @@ public class Controller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        GetComponent<UI_Manager>().UpdateUI(levelNum, hp, arrows);
         if (Input.GetKeyDown(KeyCode.N))
         {
-            newMap(20, 20);
+            nextLevel();
+        }
+        if (hp <= 0)
+        {
+            Restart();
         }
     }
 }
