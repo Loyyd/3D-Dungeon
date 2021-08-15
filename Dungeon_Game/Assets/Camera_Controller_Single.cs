@@ -15,6 +15,7 @@ public class Camera_Controller_Single : MonoBehaviour
 
     void Start()
     {
+        Application.targetFrameRate = 60;
         playerTransform = follower.GetComponent<Transform>();
         //_cameraOffset = transform.position - PlayerTransform.position;
         
