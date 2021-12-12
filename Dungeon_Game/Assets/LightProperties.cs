@@ -5,7 +5,7 @@ using UnityEngine;
 public class LightProperties : MonoBehaviour
 {
     public float inGameIntensity;
-    Light light;
+    new Light light;
     // Start is called before the first frame update
     void Start()
     {
