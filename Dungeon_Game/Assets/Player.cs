@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class Player : MonoBehaviour
 {
-    public bool fpsCam = true;
+    public bool fpsCam = false;
     public float fpsCamHeight = 1;
     public float walkingSpeed = 3f;
     public float runningSpeed = 4.5f;

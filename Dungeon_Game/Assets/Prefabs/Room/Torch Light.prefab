@@ -107,4 +107,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   minnumber: 1
-  maxnumber: 5
+  maxnumber: 4
