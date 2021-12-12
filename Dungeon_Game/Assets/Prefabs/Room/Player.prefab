@@ -1078,7 +1078,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c7478ab70ecdcf4ebb33f02667e1e53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fpsCam: 1
+  fpsCam: 0
   fpsCamHeight: 1
   walkingSpeed: 3
   runningSpeed: 4.5
@@ -1091,8 +1091,8 @@ MonoBehaviour:
   meshRenderer: {fileID: 8672482299300499453}
   upwardPointer: {fileID: 6718543857565619041, guid: 60d6bbd3d4c5cdf4d8be2012c5c6a849, type: 3}
   stepsSound: {fileID: 0}
-  jump_up: {fileID: 0}
-  jump_land: {fileID: 0}
+  jump_up: {fileID: 1599932242}
+  jump_land: {fileID: 1599932242}
   canMove: 1
 --- !u!114 &5818344132379131372
 MonoBehaviour:
