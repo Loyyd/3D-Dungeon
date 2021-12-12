@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Hebel : MonoBehaviour
 {
+    public Transform center;
     public int[] groups;
     public bool openOnly;
     public bool closeOnly;
@@ -57,7 +58,7 @@ public class Hebel : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.E))
         {
-            if (Vector3.Distance(transform.position, player.transform.position) < 1.4)
+            if (Vector3.Distance(center.position, player.transform.position) < 0.3)
             {
                 Switch();
             }
