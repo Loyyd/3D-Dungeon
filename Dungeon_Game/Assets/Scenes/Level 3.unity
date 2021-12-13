@@ -2294,6 +2294,7 @@ PrefabInstance:
       objectReference: {fileID: 1572582367}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 15f71a46bdc69b540ac6f2b6b8973f32, type: 3}
+<<<<<<< Updated upstream
 --- !u!1 &511171705
 GameObject:
   m_ObjectHideFlags: 0
@@ -2338,6 +2339,8 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+=======
+>>>>>>> Stashed changes
 --- !u!1001 &528489954
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7039,6 +7042,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   groundLayer:
+<<<<<<< Updated upstream
+=======
+    serializedVersion: 2
+>>>>>>> Stashed changes
     m_Bits: 64
   floor: {fileID: 6956023978198175375, guid: 80f3765f32aa4fe4ea77605d5744db54, type: 3}
   wall: {fileID: 8193230181014333197, guid: f23f9c82ebcaa804ab1efb40ab3839ba, type: 3}

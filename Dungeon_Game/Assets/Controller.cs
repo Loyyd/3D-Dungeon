@@ -15,11 +15,11 @@ public class Controller : MonoBehaviour
     public GameObject player;
 
     [HideInInspector]
+    public static int currentBrush;
     public int maxHP = 100;
     public int hp = 100;
     public int arrows = 3;
     public int levelNum = 1;
-
 
     // Start is called before the first frame update
     void Start()
