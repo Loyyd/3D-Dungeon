@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Playables;
+
 
 public class Hebel : MonoBehaviour
 {
@@ -61,6 +63,7 @@ public class Hebel : MonoBehaviour
             if (Vector3.Distance(center.position, player.transform.position) < 0.3)
             {
                 Switch();
+                player.GetComponent<PlayableDirector>().Play();
             }
         }
     }
