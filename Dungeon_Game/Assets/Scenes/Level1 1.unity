@@ -12438,6 +12438,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 109572891, guid: 15f71a46bdc69b540ac6f2b6b8973f32, type: 3}
+      propertyPath: m_InitialState
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 109572891, guid: 15f71a46bdc69b540ac6f2b6b8973f32, type: 3}
       propertyPath: m_SceneBindings.Array.data[1].value
       value: 
       objectReference: {fileID: 1415667667}
@@ -28263,7 +28267,7 @@ MonoBehaviour:
   m_LookAt: {fileID: 1612773014}
   m_Follow: {fileID: 0}
   m_Lens:
-    FieldOfView: 60
+    FieldOfView: 80
     OrthographicSize: 5
     NearClipPlane: 0.01
     FarClipPlane: 1000
@@ -28284,7 +28288,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1128159703}
-  m_LocalRotation: {x: 0.0063158125, y: 0.9850297, z: -0.036975432, w: 0.16825397}
+  m_LocalRotation: {x: 0.008235686, y: 0.98336583, z: -0.046151146, w: 0.17548193}
   m_LocalPosition: {x: -2, y: 2.5, z: 7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -53299,7 +53303,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3142606894678806045, guid: 04e159d769052e742a6b1a59a68f6ddb, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.9980763
       objectReference: {fileID: 0}
     - target: {fileID: 3142606894678806045, guid: 04e159d769052e742a6b1a59a68f6ddb, type: 3}
       propertyPath: m_LocalRotation.x
