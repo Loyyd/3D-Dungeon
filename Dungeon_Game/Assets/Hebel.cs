@@ -5,6 +5,7 @@ using UnityEngine;
 public class Hebel : MonoBehaviour
 {
     public Transform center;
+    public Transform handle;
     public int[] groups;
     public bool openOnly;
     public bool closeOnly;
@@ -29,8 +30,8 @@ public class Hebel : MonoBehaviour
 
     void Switch()
     {
-        Debug.Log(player.transform.position);
-        if(openOnly)
+        handle.eulerAngles = new Vector3(-handle.eulerAngles.x, handle.eulerAngles.y, handle.eulerAngles.z);
+        if (openOnly)
         {
             foreach(Gate gate in gates)
             {
