@@ -24,7 +24,6 @@ public class Hebel : MonoBehaviour
                     gates.Add(gate);
                 }
             }
-            Debug.Log(gates.Count);
         }
     }
 
