@@ -28,7 +28,7 @@ public class Enemy : MonoBehaviour
             }
             else
             {
-                controller.hp -= 20;
+                Controller.hp -= 20;
                 hitCount = hitIntervall;
             }
         } else {

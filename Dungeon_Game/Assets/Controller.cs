@@ -12,14 +12,19 @@ public class Controller : MonoBehaviour
     public GameObject spikesPrefab;
     public GameObject exitPrefab;
     public GameObject skeletonPrefab;
-    public GameObject player;
+    public static GameObject player;
+    public GameObject hey;
+    public static GameObject playerqwet;
+    public static GameObject playerasedf;
+    public static GameObject playerwerq;
+    public static GameObject playerzxcvb;
 
     [HideInInspector]
     public static int currentBrush;
-    public int maxHP = 100;
-    public int hp = 100;
-    public int arrows = 3;
-    public int levelNum = 1;
+    public static int maxHP = 100;
+    public static int hp = 100;
+    public static int arrows = 3;
+    public static int levelNum = 1;
 
     // Start is called before the first frame update
     void Start()
@@ -57,8 +62,6 @@ public class Controller : MonoBehaviour
         level.tiles[_newPos.x + 1, _newPos.y + 1] = RoomTile.Exit;
         // Instantiate stairs object
         GameObject exit = Instantiate(exitPrefab, new Vector3(_newPos.x + 0.5f, 0, _newPos.y + 0.5f), Quaternion.Euler(0, 0, 0));
-        exit.GetComponent<ExitDoor>().player = player;
-        exit.GetComponent<ExitDoor>().controller = this;
         exit.transform.SetParent(levelObject.transform, false);
 
         // PLACE OBJECTS
