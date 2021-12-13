@@ -26,6 +26,9 @@ public class Player : MonoBehaviour
     float rotationX = 0;
     bool landed = true;
 
+    [SerializeField]
+    private float _pushForce;
+
     [HideInInspector]
     public bool canMove = true;
 
@@ -41,6 +44,19 @@ public class Player : MonoBehaviour
             // Lock cursor
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+        }
+    }
+
+
+
+    void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        //if(!characterController.isGrounded && hit.transform.tag ==  "Wall")
+        //{ }
+        Rigidbody rb = hit.collider.attachedRigidbody;
+        if(rb  != null && !rb.isKinematic)
+        {
+            rb.velocity = Vector3.Scale(hit.moveDirection, new Vector3(1,0,1)) * _pushForce;
         }
     }
 
