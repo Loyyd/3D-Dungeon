@@ -26,6 +26,7 @@ public class ClickSpawn : MonoBehaviour
 
     void OnScene(SceneView scene)
     {
+        //Debug.Log(Controller.currentBrush);
         if(Controller.currentBrush == 0)
         {
             return;
@@ -47,6 +48,7 @@ public class ClickSpawn : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, groundLayer))
             {
+                Debug.Log("Hit");
                 Vector3 spawnPosition = new Vector3(Mathf.Floor(hit.point.x+0.5f), 0, Mathf.Floor(hit.point.z+0.5f));
 
                 GameObject spawnObject = Controller.currentBrush == 1 ? floor : Controller.currentBrush == 2 ? wall : gate;
