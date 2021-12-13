@@ -93,7 +93,7 @@ public class Player : MonoBehaviour
         Vector3 forward = upwardPointer.transform.TransformDirection(Vector3.forward);
         Vector3 right = upwardPointer.transform.TransformDirection(Vector3.right);
 
-        GetComponent<UnitAnimator>().Run();
+        //GetComponent<UnitAnimator>().Run();
 
         // Press Left Shift to run
         bool isRunning = Input.GetKey(KeyCode.LeftShift);
