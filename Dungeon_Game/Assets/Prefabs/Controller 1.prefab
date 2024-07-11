@@ -215,7 +215,7 @@ GameObject:
   - component: {fileID: 5046958158974679473}
   - component: {fileID: 8780331468916510488}
   m_Layer: 0
-  m_Name: Controller
+  m_Name: Controller 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
