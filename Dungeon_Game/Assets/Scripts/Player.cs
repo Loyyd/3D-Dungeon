@@ -35,7 +35,7 @@ public class Player : MonoBehaviour
 
     void Start()
     {
-        //Debug.Log(transform.Find("Torch Light").position);
+        Debug.Log("Player Start Event");
         characterController = GetComponent<CharacterController>();
         upwardPointer = Instantiate(upwardPointer);
         stepsSound = GetComponent<AudioSource>();

@@ -41,6 +41,7 @@ public class Controller : MonoBehaviour
     public void nextLevel()
     {
         levelNum++;
+        Debug.Log("Level " + levelNum);
         newMap(18 + levelNum * 2, 18 + levelNum * 2);
     }
     public void newMap(int width, int height)
@@ -114,7 +115,7 @@ public class Controller : MonoBehaviour
         for (int i = 0; i < enemyCount; i++)
         {
             _newPos = LevelGenerator.RandomFreePos();
-            Instantiate(skeletonPrefab, new Vector3(_newPos.x, 0, _newPos.y), new Quaternion(), levelObject.transform);
+            Instantiate(skeletonPrefab, new Vector3(_newPos.x, 0.4f, _newPos.y), new Quaternion(), levelObject.transform);
         }
 
         // Set Player Pos
