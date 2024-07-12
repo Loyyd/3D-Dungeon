@@ -17,7 +17,10 @@ public class ExitDoor : MonoBehaviour
         
         Vector3 plyPos = Manager.instance.player.transform.position;
         // Debug.Log((plyPos - transform.position).magnitude);
-        if((plyPos - transform.position).magnitude < 2) {
+        
+        var v = (plyPos - transform.position);
+        var vDistance = new Vector2(v.x, v.z);
+        if(vDistance.magnitude < 0.7) {
             if(SceneManager.GetActiveScene().buildIndex+1 < SceneManager.sceneCountInBuildSettings)
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
             controller.nextLevel();

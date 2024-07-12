@@ -4,16 +4,17 @@ public class Torch_flicker : MonoBehaviour
 {
 
     float targetIntensity;
-    public float minnumber;
-    public float maxnumber;
-    float speedchangevalue;
+    public float min = 3.5f;
+    public float max = 4f;
+    public float minSpeed = 0.02f;
+    public float maxSpeed = 0.1f;
+    float speed = 0.3f;
 
     bool increasing = true;
     float curIntensity;
 
-    void Start()
-    {
-        speedchangevalue = 0.3f;
+    void Start() {
+        SetSpeedChangeValue();
     }
 
     void Update()
@@ -22,7 +23,7 @@ public class Torch_flicker : MonoBehaviour
         {
             if (curIntensity <= targetIntensity)
             {
-                curIntensity += speedchangevalue;
+                curIntensity += speed;
                 GetComponent<Light>().intensity = curIntensity;
             }
             else
@@ -35,7 +36,7 @@ public class Torch_flicker : MonoBehaviour
         {
             if (curIntensity >= targetIntensity)
             {
-                curIntensity -= speedchangevalue;
+                curIntensity -= speed;
                 GetComponent<Light>().intensity = curIntensity;
             }
             else
@@ -50,12 +51,12 @@ public class Torch_flicker : MonoBehaviour
     {
         if (increasing)
         {
-            targetIntensity = Random.Range(minnumber, targetIntensity);
+            targetIntensity = Random.Range(min, targetIntensity);
             increasing = false;
         }
         else
         {
-            targetIntensity = Random.Range(targetIntensity, maxnumber);
+            targetIntensity = Random.Range(targetIntensity, max);
             increasing = true;
         }
         //rand_number = Mathf.Round(rand_number * 10.0f) / 10.0f;
@@ -63,6 +64,6 @@ public class Torch_flicker : MonoBehaviour
 
     void SetSpeedChangeValue()
     {
-        speedchangevalue = Random.Range(0.1f, 0.5f);
+        speed = Random.Range(minSpeed, maxSpeed);
     }
 }

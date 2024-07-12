@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using ExtensionMethods;
+using Unity.AI.Navigation;
 using UnityEngine;
 
 public class Controller : MonoBehaviour
@@ -10,14 +11,11 @@ public class Controller : MonoBehaviour
     public GameObject groundPrefab;
     public GameObject torchPrefab;
     public GameObject spikesPrefab;
+    public GameObject planePrefab;
     public GameObject exitPrefab;
     public GameObject skeletonPrefab;
-    public static GameObject player;
-    public GameObject hey;
-    public static GameObject playerqwet;
-    public static GameObject playerasedf;
-    public static GameObject playerwerq;
-    public static GameObject playerzxcvb;
+    private GameObject player;
+    private GameObject plane;
 
     [HideInInspector]
     public static int currentBrush;
@@ -28,7 +26,12 @@ public class Controller : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
-    {
+    {       
+        // Set the fog color to be blue
+        RenderSettings.fogColor = Color.black;
+
+        player = GameObject.Find("Player");
+        plane = Instantiate(planePrefab, new Vector3(0, 0, 0), Quaternion.Euler(0, 0, 0));
         levelNum--;
         nextLevel();
     }
@@ -46,6 +49,9 @@ public class Controller : MonoBehaviour
     }
     public void newMap(int width, int height)
     {
+        plane.GetComponent<BoxCollider>().size = new Vector3(width, 0.1f, height);
+        plane.transform.position = new Vector3(width / 2, 0, height / 2);
+        plane.GetComponent<NavMeshSurface>().BuildNavMesh();
         Destroy(levelObject, 0);
         levelObject = new GameObject("Level");
         LevelGenerator.level = LevelGenerator.Generate(width, height);
@@ -54,8 +60,7 @@ public class Controller : MonoBehaviour
 
         // CREATE EXIT
         List<Vector2Int> possiblePositions = LevelGenerator.freePosNotAtEntrance(2, 2);
-        System.Random random = new System.Random();
-        _newPos = possiblePositions[(int)UnityEngine.Random.Range(0, possiblePositions.Count)];
+        _newPos = possiblePositions[Random.Range(0, possiblePositions.Count)];
         // Update tiles array
         level.tiles[_newPos.x, _newPos.y] = RoomTile.Exit;
         level.tiles[_newPos.x + 1, _newPos.y] = RoomTile.Exit;
@@ -67,7 +72,9 @@ public class Controller : MonoBehaviour
 
         // PLACE OBJECTS
         level.PlaceTorches(1);
-        level.PlaceSpikes(10);
+
+        // Spikes aren't functional yet
+        // level.PlaceSpikes(10);
 
         // SPAWN GROUND AND WALLS
         for (int i = 0; i < level.tiles.GetLength(0); i++)
@@ -114,8 +121,12 @@ public class Controller : MonoBehaviour
         Debug.Log(levelNum);
         for (int i = 0; i < enemyCount; i++)
         {
-            _newPos = LevelGenerator.RandomFreePos();
-            Instantiate(skeletonPrefab, new Vector3(_newPos.x, 0.4f, _newPos.y), new Quaternion(), levelObject.transform);
+            Vector3 spawnPos;
+            do {
+                _newPos = LevelGenerator.RandomFreePos();
+                spawnPos = new Vector3(_newPos.x, 0.4f, _newPos.y);
+            } while ((player.transform.position - spawnPos).magnitude < 5f);
+            Instantiate(skeletonPrefab, spawnPos, new Quaternion(), levelObject.transform);
         }
 
         // Set Player Pos

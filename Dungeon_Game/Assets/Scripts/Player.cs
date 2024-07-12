@@ -1,12 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
 public class Player : MonoBehaviour
 {
-    public bool fpsCam = false;
+    public bool fpsCam = true;
     public float fpsCamHeight = 1;
     public float walkingSpeed = 3f;
     public float runningSpeed = 4.5f;
@@ -40,6 +38,8 @@ public class Player : MonoBehaviour
         upwardPointer = Instantiate(upwardPointer);
         stepsSound = GetComponent<AudioSource>();
 
+
+        FpsCam(true);
         if (fpsCam)
         {
             // Lock cursor
@@ -70,18 +70,7 @@ public class Player : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.C))
         {
-            if (fpsCam)
-            {
-                fpsCam = false;
-                playerCamera.GetComponent<CinemachineBrain>().enabled = true;
-                playerCamera.GetComponent<Camera>().cullingMask = playerCamera.GetComponent<Camera>().cullingMask | (1 << 3); ;
-            }
-            else
-            {
-                fpsCam = true;
-                playerCamera.GetComponent<CinemachineBrain>().enabled = false;
-                playerCamera.GetComponent<Camera>().cullingMask = playerCamera.GetComponent<Camera>().cullingMask & ~(1 << 3);
-            }
+            FpsCam(!fpsCam);
         }
 
         if (fpsCam)
@@ -182,5 +171,20 @@ public class Player : MonoBehaviour
         }
 
         lastPos = transform.position;
+    }
+
+    void FpsCam(bool turnOn) {
+        fpsCam = turnOn;
+        if (turnOn)
+            {
+                playerCamera.GetComponent<CinemachineBrain>().enabled = false;
+                playerCamera.GetComponent<Camera>().cullingMask = playerCamera.GetComponent<Camera>().cullingMask & ~(1 << 3);
+                playerCamera.GetComponent<Camera_Controller_Single>().transform.rotation = Quaternion.Euler(0, transform.rotation.y, 0);
+            }
+            else
+            {
+                // playerCamera.GetComponent<CinemachineBrain>().enabled = true;
+                playerCamera.GetComponent<Camera>().cullingMask = playerCamera.GetComponent<Camera>().cullingMask | (1 << 3); ;
+            }
     }
 }
