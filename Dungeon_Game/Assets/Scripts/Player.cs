@@ -1,5 +1,6 @@
 using Cinemachine;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 [RequireComponent(typeof(CharacterController))]
 public class Player : MonoBehaviour
@@ -12,7 +13,7 @@ public class Player : MonoBehaviour
     public float gravity = 10.0f;
     public GameObject playerCamera;
     public float lookSpeed = 6.0f;
-    public float lookXLimit = 45.0f;
+    public float lookXLimit = 90.0f;
     public float Speed = 3.0F;
     public SkinnedMeshRenderer meshRenderer;
     public GameObject upwardPointer;
@@ -43,8 +44,8 @@ public class Player : MonoBehaviour
         if (fpsCam)
         {
             // Lock cursor
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+            UnityEngine.Cursor.visible = false;
         }
     }
 
@@ -71,6 +72,17 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.C))
         {
             FpsCam(!fpsCam);
+        }
+
+        if (Input.GetMouseButtonDown((int)MouseButton.LeftMouse))
+        {
+            var arrowObj = (GameObject)Resources.Load("Arrow", typeof(GameObject));
+            var camRot = playerCamera.GetComponent<Camera>().transform.rotation;
+            var arrowRot = camRot * Quaternion.Euler(-10, 0, 0);
+            var pos = transform.position;
+            var spawnPos = new Vector3(pos.x, pos.y + 1, pos.z) + camRot * new Vector3(0, 0, 1);
+            var o = Instantiate(arrowObj, spawnPos, arrowRot);
+            o.GetComponentInChildren<Rigidbody>().AddForce(arrowRot * new Vector3(0, 0, 1) * 50);
         }
 
         if (fpsCam)

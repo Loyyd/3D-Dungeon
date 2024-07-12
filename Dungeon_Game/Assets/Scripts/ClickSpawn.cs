@@ -21,7 +21,8 @@ public class ClickSpawn : MonoBehaviour
         {
             Destroy(this);
         }
-        SceneView.onSceneGUIDelegate += OnScene;
+        SceneView.duringSceneGui += OnScene;
+
     }
 
     void OnScene(SceneView scene)

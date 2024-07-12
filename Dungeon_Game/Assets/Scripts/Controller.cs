@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ExtensionMethods;
 using Unity.AI.Navigation;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
 public class Controller : MonoBehaviour
 {
@@ -16,6 +17,7 @@ public class Controller : MonoBehaviour
     public GameObject skeletonPrefab;
     private GameObject player;
     private GameObject plane;
+    private FadeInFadeOut fadeEffect;
 
     [HideInInspector]
     public static int currentBrush;
@@ -29,24 +31,31 @@ public class Controller : MonoBehaviour
     {       
         // Set the fog color to be blue
         RenderSettings.fogColor = Color.black;
-
+        fadeEffect = FindObjectOfType<FadeInFadeOut>();
         player = GameObject.Find("Player");
-        plane = Instantiate(planePrefab, new Vector3(0, 0, 0), Quaternion.Euler(0, 0, 0));
+        plane = Instantiate(planePrefab, new Vector3(0, -0.1f, 0), Quaternion.Euler(0, 0, 0));
         levelNum--;
-        nextLevel();
+        TransitionToNextLevel();
     }
     public void Restart()
     {
         levelNum = 0;
         hp = maxHP;
-        nextLevel();
+        TransitionToNextLevel();
     }
-    public void nextLevel()
+
+    public void TransitionToNextLevel() {
+        fadeEffect.FadeOutInWithCallback(NextLevel);
+    }
+
+
+    private void NextLevel()
     {
         levelNum++;
         Debug.Log("Level " + levelNum);
         newMap(18 + levelNum * 2, 18 + levelNum * 2);
     }
+
     public void newMap(int width, int height)
     {
         plane.GetComponent<BoxCollider>().size = new Vector3(width, 0.1f, height);
@@ -116,6 +125,12 @@ public class Controller : MonoBehaviour
             }
         }
 
+        // Set Player Pos
+        _newPos = LevelGenerator.RandomFreePos();
+        player.GetComponent<CharacterController>().enabled = false;
+        player.transform.position = new Vector3(_newPos.x, 0, _newPos.y);
+        player.GetComponent<CharacterController>().enabled = true;
+
         // SPAWN ENEMIES
         int enemyCount = levelNum - 1;
         Debug.Log(levelNum);
@@ -128,12 +143,6 @@ public class Controller : MonoBehaviour
             } while ((player.transform.position - spawnPos).magnitude < 5f);
             Instantiate(skeletonPrefab, spawnPos, new Quaternion(), levelObject.transform);
         }
-
-        // Set Player Pos
-        _newPos = LevelGenerator.RandomFreePos();
-        player.GetComponent<CharacterController>().enabled = false;
-        player.transform.position = new Vector3(_newPos.x, 0, _newPos.y);
-        player.GetComponent<CharacterController>().enabled = true;
     }
 
     // Update is called once per frame
@@ -142,11 +151,12 @@ public class Controller : MonoBehaviour
         GetComponent<UI_Manager>().UpdateUI(levelNum, hp, arrows);
         if (Input.GetKeyDown(KeyCode.N))
         {
-            nextLevel();
+            TransitionToNextLevel();
         }
         if (hp <= 0)
         {
             Restart();
         }
     }
+
 }

@@ -7,9 +7,12 @@ using UnityEngine.SceneManagement;
 public class ExitDoor : MonoBehaviour
 {
     private Controller controller;
+    private FadeInFadeOut fadeEffect;
+    private bool blockEntry = false;
 
     void Start() {
         controller = FindObjectOfType<Controller>();
+        fadeEffect = FindObjectOfType<FadeInFadeOut>();
     }
 
     void Update()
@@ -20,10 +23,11 @@ public class ExitDoor : MonoBehaviour
         
         var v = (plyPos - transform.position);
         var vDistance = new Vector2(v.x, v.z);
-        if(vDistance.magnitude < 0.7) {
+        if(vDistance.magnitude < 0.7 && !blockEntry) {
             if(SceneManager.GetActiveScene().buildIndex+1 < SceneManager.sceneCountInBuildSettings)
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
-            controller.nextLevel();
+            blockEntry = true;
+            controller.TransitionToNextLevel();
         }
     }
     public void ChangeScene(string sceneName)
