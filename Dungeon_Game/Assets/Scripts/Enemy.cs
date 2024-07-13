@@ -8,6 +8,7 @@ public class Enemy : MonoBehaviour
     Transform player;
     int hitIntervall = 30;
     int hitCount;
+    public int Hp = 100;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,6 +21,11 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Hp <= 0)
+        {
+            Destroy(gameObject);
+        }
+
         if (Vector3.Distance(transform.position, player.position) < 1.3f)
         {
             if (hitCount > 0)
@@ -28,6 +34,7 @@ public class Enemy : MonoBehaviour
             }
             else
             {
+                player.GetComponent<Player>().TakeDamageSound();
                 Controller.hp -= 20;
                 hitCount = hitIntervall;
             }

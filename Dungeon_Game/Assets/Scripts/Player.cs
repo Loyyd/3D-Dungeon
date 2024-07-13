@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
     public float lookSpeed = 6.0f;
     public float lookXLimit = 90.0f;
     public float Speed = 3.0F;
+    public float shootForce = 100;
     public SkinnedMeshRenderer meshRenderer;
     public GameObject upwardPointer;
     CharacterController characterController;
@@ -23,6 +24,9 @@ public class Player : MonoBehaviour
     public AudioSource stepsSound;
     public AudioSource jump_up;
     public AudioSource jump_land;
+    public AudioSource pickUpArrow;
+    public AudioClip[] injuredSounds;
+    private AudioSource injuredSoundsSource;
     float rotationX = 0;
     bool landed = true;
 
@@ -38,7 +42,7 @@ public class Player : MonoBehaviour
         characterController = GetComponent<CharacterController>();
         upwardPointer = Instantiate(upwardPointer);
         stepsSound = GetComponent<AudioSource>();
-
+        injuredSoundsSource = gameObject.AddComponent<AudioSource>();
 
         FpsCam(true);
         if (fpsCam)
@@ -49,7 +53,10 @@ public class Player : MonoBehaviour
         }
     }
 
-
+    public void TakeDamageSound() {
+        injuredSoundsSource.clip = injuredSounds[Random.Range(0, injuredSounds.Length)];
+        injuredSoundsSource.Play();
+    }
 
     void OnControllerColliderHit(ControllerColliderHit hit)
     {
@@ -76,13 +83,7 @@ public class Player : MonoBehaviour
 
         if (Input.GetMouseButtonDown((int)MouseButton.LeftMouse))
         {
-            var arrowObj = (GameObject)Resources.Load("Arrow", typeof(GameObject));
-            var camRot = playerCamera.GetComponent<Camera>().transform.rotation;
-            var arrowRot = camRot * Quaternion.Euler(-10, 0, 0);
-            var pos = transform.position;
-            var spawnPos = new Vector3(pos.x, pos.y + 1, pos.z) + camRot * new Vector3(0, 0, 1);
-            var o = Instantiate(arrowObj, spawnPos, arrowRot);
-            o.GetComponentInChildren<Rigidbody>().AddForce(arrowRot * new Vector3(0, 0, 1) * 50);
+            Shoot();
         }
 
         if (fpsCam)
@@ -183,6 +184,20 @@ public class Player : MonoBehaviour
         }
 
         lastPos = transform.position;
+    }
+
+    private void Shoot()
+    {
+        if (Controller.arrows > 0) {
+            Controller.arrows -= 1;
+            var arrowObj = (GameObject)Resources.Load("Arrow", typeof(GameObject));
+            var camRot = playerCamera.GetComponent<Camera>().transform.rotation;
+            var arrowRot = camRot * Quaternion.Euler(-10, 0, 0);
+            var pos = transform.position;
+            var spawnPos = new Vector3(pos.x, pos.y + 0.9f, pos.z) + camRot * new Vector3(0.2f, 0, 0);
+            var o = Instantiate(arrowObj, spawnPos, arrowRot);
+            o.GetComponentInChildren<Rigidbody>().AddForce(arrowRot * new Vector3(0, 0, 1) * shootForce);
+        }
     }
 
     void FpsCam(bool turnOn) {

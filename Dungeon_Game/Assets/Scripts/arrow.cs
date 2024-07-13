@@ -5,20 +5,28 @@ using UnityEngine;
 public class arrow : MonoBehaviour
 {
     public bool isLive = true;
+    public GameObject player;
+
+    void Start() {
+        player = GameObject.Find("Player");
+    }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (!isLive && (transform.position - player.transform.position).magnitude < 1)
+        {
+            player.GetComponent<Player>().pickUpArrow.Play();
+            Destroy(gameObject);
+            Controller.arrows++;
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("Coll enter");
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            Debug.Log("Coll enemy");
-            Destroy(collision.gameObject);
+            collision.gameObject.GetComponent<Enemy>().Hp -= 20;
         }
 
         isLive = false;
