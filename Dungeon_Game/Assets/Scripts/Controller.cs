@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using ExtensionMethods;
 using Unity.AI.Navigation;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
 
@@ -15,6 +16,7 @@ public class Controller : MonoBehaviour
     public GameObject planePrefab;
     public GameObject exitPrefab;
     public GameObject skeletonPrefab;
+    public int startingArrows = 5;
     private GameObject player;
     private GameObject plane;
     private FadeInFadeOut fadeEffect;
@@ -23,7 +25,7 @@ public class Controller : MonoBehaviour
     public static int currentBrush;
     public static int maxHP = 100;
     public static int hp = 100;
-    public static int arrows = 3;
+    public static int arrows;
     public static int levelNum = 1;
 
     // Start is called before the first frame update
@@ -34,11 +36,13 @@ public class Controller : MonoBehaviour
         fadeEffect = FindObjectOfType<FadeInFadeOut>();
         player = GameObject.Find("Player");
         plane = Instantiate(planePrefab, new Vector3(0, -0.1f, 0), Quaternion.Euler(0, 0, 0));
+        arrows = startingArrows;
         levelNum--;
         TransitionToNextLevel();
     }
     public void Restart()
     {
+        arrows = startingArrows;
         levelNum = 0;
         hp = maxHP;
         TransitionToNextLevel();

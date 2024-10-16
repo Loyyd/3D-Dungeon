@@ -25,6 +25,7 @@ public class Player : MonoBehaviour
     public AudioSource jump_up;
     public AudioSource jump_land;
     public AudioSource pickUpArrow;
+    public AudioSource shootArrow;
     public AudioClip[] injuredSounds;
     private AudioSource injuredSoundsSource;
     float rotationX = 0;
@@ -190,6 +191,7 @@ public class Player : MonoBehaviour
     {
         if (Controller.arrows > 0) {
             Controller.arrows -= 1;
+            shootArrow.Play();
             var arrowObj = (GameObject)Resources.Load("Arrow", typeof(GameObject));
             var camRot = playerCamera.GetComponent<Camera>().transform.rotation;
             var arrowRot = camRot * Quaternion.Euler(-10, 0, 0);

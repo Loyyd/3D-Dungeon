@@ -6,7 +6,7 @@ public class Enemy : MonoBehaviour
 {
     Controller controller;
     Transform player;
-    int hitIntervall = 30;
+    int hitIntervall = 15;
     int hitCount;
     public int Hp = 100;
     // Start is called before the first frame update
@@ -35,7 +35,7 @@ public class Enemy : MonoBehaviour
             else
             {
                 player.GetComponent<Player>().TakeDamageSound();
-                Controller.hp -= 20;
+                Controller.hp -= 10;
                 hitCount = hitIntervall;
             }
         } else {
